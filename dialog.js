@@ -8,11 +8,13 @@ class ChatDialog {
     constructor() {
         this.dialog = null;
         this.isVisible = false;
+        this.isInitialized = false;  // 添加初始化状态标志
         console.log('ChatDialog initialized');
     }
 
-    create() {
+    async create() {
         console.log('Creating dialog...');
+        // 创建主对话框容器
         this.dialog = document.createElement('div');
         this.dialog.id = 'ai-chat-dialog';
         this.dialog.style.cssText = `
@@ -27,28 +29,42 @@ class ChatDialog {
             z-index: 2147483647;
         `;
 
-        // 加载外部HTML
-        fetch(chrome.runtime.getURL('dialog.html'))
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const content = doc.querySelector('.chat-container');
+        // 先将dialog添加到文档中
+        document.body.appendChild(this.dialog);
+
+        try {
+            // 加载外部HTML
+            const response = await fetch(chrome.runtime.getURL('dialog.html'));
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const content = doc.querySelector('.chat-container');
+            
+            if (content) {
                 this.dialog.appendChild(content);
                 this.initializeEventListeners();
+                this.isInitialized = true;  // 标记初始化完成
                 this.addWelcomeMessage();
-            })
-            .catch(error => {
-                console.error('Error loading dialog HTML:', error);
-            });
-
-        document.body.appendChild(this.dialog);
+                console.log('Dialog initialization completed');
+            } else {
+                console.error('Failed to find .chat-container in loaded HTML');
+            }
+        } catch (error) {
+            console.error('Error loading dialog HTML:', error);
+        }
     }
 
-    show(selectedText = '') {
-        if (!this.dialog) {
-            this.create();
+    async show(selectedText = '') {
+        console.log('Showing dialog...');
+        if (!this.dialog || !this.isInitialized) {
+            await this.create();
         }
+
+        if (!this.isInitialized) {
+            console.log('Dialog not initialized yet, waiting...');
+            return;
+        }
+
         this.dialog.style.right = '0';
         this.isVisible = true;
 
@@ -74,7 +90,17 @@ class ChatDialog {
     }
 
     addMessage(text, type) {
+        if (!this.isInitialized) {
+            console.log('Dialog not initialized yet, cannot add message');
+            return;
+        }
+
         const messagesContainer = this.dialog.querySelector('#chat-messages');
+        if (!messagesContainer) {
+            console.error('Messages container not found');
+            return;
+        }
+
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}-message`;
         
@@ -94,11 +120,23 @@ class ChatDialog {
     }
 
     addWelcomeMessage() {
-        this.addMessage('有什么可以帮助你的吗？', 'ai');
+        if (this.isInitialized) {
+            this.addMessage('有什么可以帮助你的吗？', 'ai');
+        }
     }
 
     showTypingIndicator() {
+        if (!this.isInitialized) {
+            console.log('Dialog not initialized yet, cannot show typing indicator');
+            return null;
+        }
+
         const messagesContainer = this.dialog.querySelector('#chat-messages');
+        if (!messagesContainer) {
+            console.error('Messages container not found');
+            return null;
+        }
+
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message ai-message';
         typingDiv.innerHTML = `
@@ -120,27 +158,37 @@ class ChatDialog {
     }
 
     initializeEventListeners() {
+        if (!this.dialog) {
+            console.error('Dialog not created, cannot initialize event listeners');
+            return;
+        }
+
         const closeButton = this.dialog.querySelector('#close-chat');
         const sendButton = this.dialog.querySelector('#send-message');
         const input = this.dialog.querySelector('#user-input');
 
-        closeButton.addEventListener('click', () => this.hide());
+        if (closeButton) {
+            closeButton.addEventListener('click', () => this.hide());
+        }
 
-        sendButton.addEventListener('click', () => this.handleSendMessage());
+        if (sendButton && input) {
+            sendButton.addEventListener('click', () => this.handleSendMessage());
 
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.handleSendMessage();
-            }
-        });
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.handleSendMessage();
+                }
+            });
 
-        input.addEventListener('input', function() {
-            this.style.height = 'auto';
-            const newHeight = Math.min(this.scrollHeight, 120);
-            this.style.height = newHeight + 'px';
-        });
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                const newHeight = Math.min(this.scrollHeight, 120);
+                this.style.height = newHeight + 'px';
+            });
+        }
 
+        // 防止事件冒泡
         this.dialog.addEventListener('mousedown', (e) => {
             e.stopPropagation();
         });
@@ -155,7 +203,17 @@ class ChatDialog {
     }
 
     async handleSendMessage() {
+        if (!this.isInitialized) {
+            console.log('Dialog not initialized yet, cannot send message');
+            return;
+        }
+
         const input = this.dialog.querySelector('#user-input');
+        if (!input) {
+            console.error('Input element not found');
+            return;
+        }
+
         const message = input.value.trim();
         
         if (message) {
@@ -179,9 +237,11 @@ class ChatDialog {
     }
 }
 
+// 添加全局错误处理
 window.onerror = function(msg, url, line, col, error) {
     console.error('Global error:', msg, 'at', url, 'line:', line);
     return false;
 };
 
+// 导出 ChatDialog 类
 window.ChatDialog = ChatDialog;
