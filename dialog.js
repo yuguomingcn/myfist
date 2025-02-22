@@ -36,6 +36,19 @@ class ChatDialog {
             // 加载外部HTML
             const response = await fetch(chrome.runtime.getURL('dialog.html'));
             const html = await response.text();
+            
+            // 提取 style 内容
+            const styleMatch = html.match(/<style>([\s\S]*?)<\/style>/);
+            const styleContent = styleMatch ? styleMatch[1] : '';
+            
+            // 创建并添加样式
+            if (styleContent) {
+                const styleElement = document.createElement('style');
+                styleElement.textContent = styleContent;
+                document.head.appendChild(styleElement);
+            }
+            
+            // 提取和添加 body 内容
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const content = doc.querySelector('.chat-container');
