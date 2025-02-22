@@ -102,34 +102,109 @@ class ChatDialog {
         }
     }
 
-    addMessage(text, type) {
+    async addMessage(text, type) {
         if (!this.isInitialized) {
             console.log('Dialog not initialized yet, cannot add message');
             return;
         }
-
+    
         const messagesContainer = this.dialog.querySelector('#chat-messages');
         if (!messagesContainer) {
             console.error('Messages container not found');
             return;
         }
-
+    
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}-message`;
         
-        const now = new Date();
-        const time = now.toLocaleTimeString('zh-CN', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
+        if (type === 'ai') {
+            // 首先显示思考动画
+            messageDiv.innerHTML = `
+                <div class="thinking-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+            // 等待思考动画显示 1.5 秒
+            await new Promise(resolve => setTimeout(resolve, 1500));
+    
+            // 替换为实际消息内容
+            messageDiv.innerHTML = `
+                <div class="message-content typing-effect">
+                    ${text.split('').map(char => `<span>${char}</span>`).join('')}
+                </div>
+                <div class="message-actions">
+                    <button class="message-action-button refresh-button" title="刷新">
+                        <svg viewBox="0 0 24 24" width="14" height="14">
+                            <path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                    </button>
+                    <button class="message-action-button copy-button" title="复制">
+                        <svg viewBox="0 0 24 24" width="14" height="14">
+                            <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+    
+            const messageContent = messageDiv.querySelector('.message-content');
+            const spans = messageContent.querySelectorAll('span');
+    
+            // 显示消息内容
+            messageContent.classList.add('show');
+    
+            // 为每个字符添加延迟动画
+            spans.forEach((span, index) => {
+                setTimeout(() => {
+                    span.style.animation = 'typewriter 0.05s ease forwards';
+                }, index * 50); // 每个字符之间间隔 50ms
+            });
+    
+        } else {
+            // 用户消息直接显示
+            messageDiv.innerHTML = `
+                <div class="message-content">${text}</div>
+                <div class="message-actions">
+                    <button class="message-action-button refresh-button" title="刷新">
+                        <svg viewBox="0 0 24 24" width="14" height="14">
+                            <path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                    </button>
+                    <button class="message-action-button copy-button" title="复制">
+                        <svg viewBox="0 0 24 24" width="14" height="14">
+                            <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }
         
-        messageDiv.innerHTML = `
-            <div class="message-content">${text}</div>
-            <div class="message-time">${time}</div>
-        `;
-        
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (type === 'user') {
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    
+        // 添加复制和刷新功能
+        const copyButton = messageDiv.querySelector('.copy-button');
+        const refreshButton = messageDiv.querySelector('.refresh-button');
+    
+        if (copyButton) {
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(text).then(() => {
+                    console.log('文本已复制');
+                });
+            });
+        }
+    
+        if (refreshButton) {
+            refreshButton.addEventListener('click', () => {
+                console.log('刷新消息');
+            });
+        }
     }
 
     addWelcomeMessage() {
