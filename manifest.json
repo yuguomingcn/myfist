@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "AI Text Assistant",
+  "version": "1.0",
+  "description": "AI powered text processing assistant",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": [
+        "assets/fontawesome/css/all.min.css",
+        "styles.css"
+      ],
+      "js": ["dialog.js", "content.js"]
+    }
+  ],
+  "web_accessible_resources": [{
+    "resources": [
+      "dialog.html",
+      "assets/fontawesome/webfonts/*"
+    ],
+    "matches": ["<all_urls>"]
+  }]
+}

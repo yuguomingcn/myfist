@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text Translator</title>
+  <style>
+    #translator-popup {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      width: 300px;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+  <div id="translator-popup">
+    <h3>原文</h3>
+    <p id="original-text"></p>
+    <h3>翻译</h3>
+    <p id="translated-text"></p>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
