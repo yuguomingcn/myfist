@@ -130,17 +130,19 @@
             max-width: 100%;
         }
 
+        /* 用户消息样式 */
         .user-message .message-content {
-            background: #e4e6eb;     /* 修改用户消息背景色为灰色 */
-            color: #2c3e50;          /* 修改用户消息文字颜色 */
-            border-bottom-left-radius: 4px;  /* 修改尖角位置 */
+            background: linear-gradient(135deg, #00b4db, #0083b0);  /* 改为蓝色渐变 */
+            color: white;
+            border-bottom-left-radius: 4px;
             border-bottom-right-radius: 10px;
         }
 
+        /* AI消息样式 */
         .ai-message .message-content {
-            background: linear-gradient(135deg, #00b4db, #0083b0);  /* AI消息使用渐变蓝色 */
-            color: white;
-            border-bottom-right-radius: 4px;  /* 修改尖角位置 */
+            background: #e4e6eb;     /* 改为灰色 */
+            color: #2c3e50;
+            border-bottom-right-radius: 4px;
             border-bottom-left-radius: 10px;
         }
 
@@ -358,14 +360,157 @@
                 transform: translateY(0);
             }
         }
+
+        /* 介绍页面样式 */
+        .introduction-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            background: #f8f9fa;
+        }
+
+        .intro-content {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .intro-content h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .feature-section {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-section h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .feature-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-section li {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-section li:before {
+            content: "•";
+            color: #0083b0;
+            position: absolute;
+            left: 0;
+        }
+
+        .usage-section, .shortcuts-section {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .usage-section h3, .shortcuts-section h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .usage-section p {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .shortcuts-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .shortcuts-section li {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* 聊天视图样式 */
+        .chat-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h3>AI 助手</h3>
-            <button id="close-chat">✕</button>
+    <!-- 在 chat-container 内添加两个视图容器 -->
+<div class="chat-container">
+    <div class="chat-header">
+        <h3>AI 助手</h3>
+        <button id="close-chat">✕</button>
+    </div>
+    
+    <!-- 介绍页面 -->
+    <div id="introduction-view" class="introduction-view">
+        <div class="intro-content">
+            <h2>欢迎使用 AI 文本助手</h2>
+            <div class="feature-section">
+                <h3>📝 文本处理</h3>
+                <ul>
+                    <li>智能分析和总结长文本</li>
+                    <li>提取关键信息和重点</li>
+                    <li>优化文本格式和结构</li>
+                </ul>
+            </div>
+            <div class="feature-section">
+                <h3>🔍 内容增强</h3>
+                <ul>
+                    <li>智能扩展和改写文本</li>
+                    <li>多语言翻译</li>
+                    <li>语法和拼写检查</li>
+                </ul>
+            </div>
+            <div class="feature-section">
+                <h3>💡 创意助手</h3>
+                <ul>
+                    <li>提供写作建议和灵感</li>
+                    <li>生成相关内容</li>
+                    <li>改进表达方式</li>
+                </ul>
+            </div>
+            <div class="usage-section">
+                <h3>使用方法</h3>
+                <p>1. 选择网页中的任意文本</p>
+                <p>2. 点击右键菜单中的"AI 助手"</p>
+                <p>3. 在对话框中输入你的需求</p>
+            </div>
+            <div class="shortcuts-section">
+                <h3>快捷键</h3>
+                <ul>
+                    <li>Enter: 发送消息</li>
+                    <li>Shift + Enter: 换行</li>
+                    <li>Esc: 关闭对话框</li>
+                </ul>
+            </div>
         </div>
+    </div>
+
+    <!-- 聊天界面 -->
+    <div id="chat-view" class="chat-view" style="display: none;">
         <div class="chat-messages" id="chat-messages">
             <!-- Messages will be added here -->
         </div>
@@ -373,11 +518,11 @@
             <div class="input-area">
                 <textarea id="user-input" placeholder="输入消息..."></textarea>
                 <div class="input-actions">
-                    <!-- 这里可以添加其他功能按钮 -->
                     <button id="send-message">发送</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>

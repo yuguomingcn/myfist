@@ -8,7 +8,8 @@ class ChatDialog {
     constructor() {
         this.dialog = null;
         this.isVisible = false;
-        this.isInitialized = false;  // 添加初始化状态标志
+        this.isInitialized = false;
+        this.isIntroView = true;  // 添加视图状态标记
         console.log('ChatDialog initialized');
     }
 
@@ -56,8 +57,8 @@ class ChatDialog {
             if (content) {
                 this.dialog.appendChild(content);
                 this.initializeEventListeners();
-                this.isInitialized = true;  // 标记初始化完成
-                this.addWelcomeMessage();
+                this.isInitialized = true;
+                this.showIntroduction(); // 替换原来的 addWelcomeMessage
                 console.log('Dialog initialization completed');
             } else {
                 console.error('Failed to find .chat-container in loaded HTML');
@@ -81,9 +82,33 @@ class ChatDialog {
         this.dialog.style.right = '0';
         this.isVisible = true;
 
+        // 根据触发方式决定显示哪个视图
         if (selectedText) {
+            this.switchToChat();  // 如果有选中文本，直接切换到聊天视图
             this.addMessage(selectedText, 'user');
             this.addMessage('您想对这段文字做什么？', 'ai');
+        } else {
+            this.switchToIntro();  // 否则显示介绍页面
+        }
+    }
+    // 添加视图切换方法
+    switchToIntro() {
+        const introView = this.dialog.querySelector('#introduction-view');
+        const chatView = this.dialog.querySelector('#chat-view');
+        if (introView && chatView) {
+            introView.style.display = 'block';
+            chatView.style.display = 'none';
+            this.isIntroView = true;
+        }
+    }
+
+    switchToChat() {
+        const introView = this.dialog.querySelector('#introduction-view');
+        const chatView = this.dialog.querySelector('#chat-view');
+        if (introView && chatView) {
+            introView.style.display = 'none';
+            chatView.style.display = 'flex';
+            this.isIntroView = false;
         }
     }
 
@@ -204,12 +229,6 @@ class ChatDialog {
             refreshButton.addEventListener('click', () => {
                 console.log('刷新消息');
             });
-        }
-    }
-
-    addWelcomeMessage() {
-        if (this.isInitialized) {
-            this.addMessage('有什么可以帮助你的吗？', 'ai');
         }
     }
 
