@@ -232,6 +232,7 @@ class ChatDialog {
         }
     }
 
+
     showTypingIndicator() {
         if (!this.isInitialized) {
             console.log('Dialog not initialized yet, cannot show typing indicator');
