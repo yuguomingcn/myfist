@@ -178,20 +178,22 @@ class ChatDialog {
         }
     
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}-message`;
-        
+        messageDiv.className = `message ${type}-message new-message`; // 添加 new-message 类
+    
         // 确保滚动到底部的函数
         const scrollToBottom = () => {
             if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                
-                // 添加一个额外的检查，以确保真正滚动到底部
+                // 使用 requestAnimationFrame 确保在 DOM 更新后滚动
                 requestAnimationFrame(() => {
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    // 二次确认滚动位置
+                    setTimeout(() => {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }, 50);
                 });
             }
         };
-
+    
         if (type === 'ai') {
             // AI 消息的处理
             messageDiv.innerHTML = `
@@ -202,7 +204,7 @@ class ChatDialog {
                 </div>
             `;
             messagesContainer.appendChild(messageDiv);
-            scrollToBottom(); // 思考动画滚动到底部
+            scrollToBottom();
     
             await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -213,14 +215,12 @@ class ChatDialog {
                 </div>
                 <div class="message-actions">
                     <button class="message-action-button refresh-button" title="刷新">
-                        <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                        </svg>
+                    <svg viewBox="0 0 24 24" sizes=""><path fill="#666666" d="M11.36 8.009a.5.5 0 01-.565.701l-6.13-1.43a.5.5 0 01-.348-.679L6.861.49a.5.5 0 01.913-.023l.985 2.072A9.978 9.978 0 0112 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12v-.024c0-.267.222-.476.488-.476h2.03c.27 0 .482.23.482.5 0 3.864 3.136 7 7 7s7-3.136 7-7a7.003 7.003 0 00-8.94-6.727l1.3 2.736z"></path></svg>
                     </button>
                     <button class="message-action-button copy-button" title="复制">
-                        <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                        </svg>
+                    <svg viewBox="0 0 24 24">
+<path fill="#666666" d="M6 3C6 1.34315 7.34315 0 9 0H14C14.2652 0 14.5196 0.105357 14.7071 0.292893L21.7071 7.29289C21.8946 7.48043 22 7.73478 22 8V17C22 18.6569 20.6569 20 19 20H18V21C18 22.6569 16.6569 24 15 24H5C3.34315 24 2 22.6569 2 21V7C2 5.34315 3.34315 4 5 4H6V3ZM6 6H5C4.44772 6 4 6.44772 4 7V21C4 21.5523 4.44772 22 5 22H15C15.5523 22 16 21.5523 16 21V20H9C7.34315 20 6 18.6569 6 17V6ZM9 2C8.44772 2 8 2.44772 8 3V17C8 17.5523 8.44771 18 9 18H19C19.5523 18 20 17.5523 20 17V9H16C14.3431 9 13 7.65685 13 6V2H9ZM15 3.41421L18.5858 7H16C15.4477 7 15 6.55228 15 6V3.41421Z" fill="#293644"/>
+</svg>
                     </button>
                 </div>
             `;
@@ -231,37 +231,39 @@ class ChatDialog {
             // 显示消息内容
             messageContent.classList.add('show');
     
-            // 为每个字符添加延迟动画
-            spans.forEach((span, index) => {
-                setTimeout(() => {
-                    span.style.animation = 'typewriter 0.05s ease forwards';
-                    if (index === spans.length - 1) {
-                        setTimeout(() => {
-                            scrollToBottom(); // 打字效果完成后再次滚动到底部
-                        }, 50);
-                    }
-                }, index * 50);
-            });
+            // 为每个字符添加延迟动画，并确保滚动跟随
+            for (let i = 0; i < spans.length; i++) {
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        spans[i].style.animation = 'typewriter 0.05s ease forwards';
+                        if (i % 5 === 0 || i === spans.length - 1) { // 每5个字符或最后一个字符时滚动
+                            scrollToBottom();
+                        }
+                        resolve();
+                    }, 50);
+                });
+            }
+    
+            // 动画完成后移除新消息类（防止重复动画）
+            setTimeout(() => {
+                messageDiv.classList.remove('new-message');
+            }, 300);
     
         } else {
             // 用户消息直接显示
             messageDiv.innerHTML = `
                 <div class="message-content">${text}</div>
                 <div class="message-actions">
-                    <button class="message-action-button refresh-button" title="刷新">
-                        <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                        </svg>
-                    </button>
-                    <button class="message-action-button copy-button" title="复制">
-                        <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                        </svg>
-                    </button>
+                
                 </div>
             `;
             messagesContainer.appendChild(messageDiv);
-            scrollToBottom(); // 用户消息滚动到底部
+            scrollToBottom();
+    
+            // 动画完成后移除新消息类
+            setTimeout(() => {
+                messageDiv.classList.remove('new-message');
+            }, 300);
         }
     
         // 添加复制和刷新功能

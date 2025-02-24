@@ -100,7 +100,8 @@
             display: flex;
             flex-direction: column;
             gap: 3px;
-            height: 0; /* 这是关键，确保容器可以正确滚动 */
+            height: 0;
+            scroll-behavior: smooth; /* 添加平滑滚动效果 */
         }
         /* 美化滚动条样式 */
         .chat-messages::-webkit-scrollbar {
@@ -128,6 +129,8 @@
             clear: both;
             display: flex;
             flex-direction: column;
+        }
+        .message.new-message {
             animation: messageAppear 0.3s ease;
         }
 
@@ -316,8 +319,7 @@
 
         .ai-message .message-content.typing-effect.show span {
             display: inline-block;
-            white-space: pre;
-            animation: typewriter 0.05s ease forwards;
+            white-space: pre-wrap; /* 改为 pre-wrap 以正确处理换行 */
             opacity: 0;
         }
 
