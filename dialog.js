@@ -187,7 +187,7 @@ class ChatDialog {
                 </div>
             `;
             messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // 确保思考动画可见
     
             // 等待思考动画显示 1.5 秒
             await new Promise(resolve => setTimeout(resolve, 1500));
@@ -200,7 +200,7 @@ class ChatDialog {
                 <div class="message-actions">
                     <button class="message-action-button refresh-button" title="刷新">
                         <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                            <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
                         </svg>
                     </button>
                     <button class="message-action-button copy-button" title="复制">
@@ -221,6 +221,12 @@ class ChatDialog {
             spans.forEach((span, index) => {
                 setTimeout(() => {
                     span.style.animation = 'typewriter 0.05s ease forwards';
+                    // 在最后一个字符显示完成后滚动到底部
+                    if (index === spans.length - 1) {
+                        setTimeout(() => {
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        }, 50);
+                    }
                 }, index * 50); // 每个字符之间间隔 50ms
             });
     
@@ -231,7 +237,7 @@ class ChatDialog {
                 <div class="message-actions">
                     <button class="message-action-button refresh-button" title="刷新">
                         <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                            <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
                         </svg>
                     </button>
                     <button class="message-action-button copy-button" title="复制">
@@ -241,11 +247,8 @@ class ChatDialog {
                     </button>
                 </div>
             `;
-        }
-        
-        if (type === 'user') {
             messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // 确保滚动到底部
         }
     
         // 添加复制和刷新功能

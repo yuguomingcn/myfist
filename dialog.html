@@ -64,11 +64,15 @@
         }
 
         .chat-messages {
+            flex: 1;
+            overflow-y: auto;
             padding: 20px;
-            min-height: 100%;
-            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: 0; /* 这是关键，确保容器可以正确滚动 */
         }
-
+        /* 美化滚动条样式 */
         .chat-messages::-webkit-scrollbar {
             width: 6px;
         }
@@ -81,6 +85,10 @@
         .chat-messages::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #666;
         }
 
         .message {
@@ -455,8 +463,10 @@
         #chat-view {
             display: none;  /* 默认隐藏 */
             flex: 1;
-            overflow-y: auto;
+            overflow: hidden; /* 改为 hidden */
             background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
         }
 
         /* 新增视图容器样式 */
