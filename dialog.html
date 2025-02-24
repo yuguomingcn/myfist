@@ -15,6 +15,10 @@
             color: #24292e;
         }
 
+        .chat-container,
+        .chat-container * {
+            box-sizing: border-box !important;
+        }
         .chat-container {
             height: 100vh;
             display: flex;
@@ -236,6 +240,8 @@
             padding: 16px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
             z-index: 10;
+            box-sizing: border-box !important;
+            width: 100% !important;
         }
 
         .input-area {
@@ -560,14 +566,16 @@
         }
         .input-container {
             position: relative;
-            width: 100%;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
 
         /* 调整输入框右侧内边距，为更小的图标留出空间 */
         #user-input {
-            width: 100%;
+            width: 100% !important;
+            box-sizing: border-box !important;
             padding: 12px 16px;
-            padding-right: 32px; /* 为图标留出空间 */
+            padding-right: 32px;
             border: 1px solid #e1e4e8;
             border-radius: 10px;
             resize: none;
