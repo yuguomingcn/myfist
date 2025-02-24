@@ -316,12 +316,43 @@ class ChatDialog {
         }
     }
 
+    showConfirmDialog() {
+        return new Promise((resolve) => {
+            const confirmDialog = this.dialog.querySelector('#confirm-dialog');
+            const confirmYes = this.dialog.querySelector('#confirm-yes');
+            const confirmNo = this.dialog.querySelector('#confirm-no');
+
+            // 显示对话框
+            confirmDialog.style.display = 'flex';
+
+            // 确定按钮事件
+            const handleYes = () => {
+                confirmDialog.style.display = 'none';
+                confirmYes.removeEventListener('click', handleYes);
+                confirmNo.removeEventListener('click', handleNo);
+                resolve(true);
+            };
+
+            // 取消按钮事件
+            const handleNo = () => {
+                confirmDialog.style.display = 'none';
+                confirmYes.removeEventListener('click', handleYes);
+                confirmNo.removeEventListener('click', handleNo);
+                resolve(false);
+            };
+
+            confirmYes.addEventListener('click', handleYes);
+            confirmNo.addEventListener('click', handleNo);
+        });
+    }
+
     // 添加清空消息的方法
-    clearMessages() {
+    async clearMessages() {
         const messagesContainer = this.dialog.querySelector('#chat-messages');
         if (messagesContainer) {
-            // 显示确认对话框
-            if (confirm('确定要清空所有对话记录吗？')) {
+            // 使用自定义确认对话框
+            const confirmed = await this.showConfirmDialog();
+            if (confirmed) {
                 // 清空消息容器
                 messagesContainer.innerHTML = '';
                 // 切换到介绍页面
