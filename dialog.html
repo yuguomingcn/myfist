@@ -269,29 +269,22 @@
         }
 
         #send-message {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #00b4db, #0083b0);
-            color: white;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            min-width: 60px;
-            height: 32px;
+            color: #0083b0; /* 使用主题蓝色 */
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
         }
 
         #send-message:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 131, 176, 0.2);
-        }
-
-        #send-message:active {
-            transform: translateY(0);
+            opacity: 0.8;
         }
 
         .typing-indicator {
@@ -584,6 +577,58 @@
         .confirm-no:hover {
             background: #bdc3c7;
         }
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* 调整输入框右侧内边距，为更小的图标留出空间 */
+        #user-input {
+            padding-right: 32px;
+        }
+        .message-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding: 0 4px;
+        }
+
+        .message-count {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .message-actions-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #666;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .icon-button:hover {
+            color: #0083b0;
+            background: rgba(0, 131, 176, 0.1);
+        }
+
+        .sign-up-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0083b0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -661,9 +706,34 @@
             <!-- 共用的输入区域 -->
             <div class="chat-input">
                 <div class="input-area">
-                    <textarea id="user-input" placeholder="输入消息，开始对话..."></textarea>
-                    <div class="input-actions">
-                        <button id="send-message">发送</button>
+                    <div class="input-container">
+                        <textarea id="user-input" placeholder="输入消息，开始对话..."></textarea>
+                        <button id="send-message">
+                            <svg aria-hidden="true" focusable="false" class="octicon octicon-paper-airplane" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="display: inline-block; user-select: none; vertical-align: text-bottom; overflow: visible;"><path d="M.989 8 .064 2.68a1.342 1.342 0 0 1 1.85-1.462l13.402 5.744a1.13 1.13 0 0 1 0 2.076L1.913 14.782a1.343 1.343 0 0 1-1.85-1.463L.99 8Zm.603-5.288L2.38 7.25h4.87a.75.75 0 0 1 0 1.5H2.38l-.788 4.538L13.929 8Z"></path></svg>
+                        </button>
+                    </div>
+                    <div class="message-controls">
+                        <div class="message-count">
+                            <span>(0/100000)</span>
+                        </div>
+                        <div class="message-actions-right">
+                            <button class="icon-button" title="反馈">
+                                <svg viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="currentColor" d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>
+                                </svg>
+                            </button>
+                            <button class="icon-button" title="点赞">
+                                <svg viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/>
+                                </svg>
+                            </button>
+                            <button class="icon-button" title="设置">
+                                <svg viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                                </svg>
+                            </button>
+                            <span class="sign-up-text">SIGN UP</span>
+                        </div>
                     </div>
                 </div>
             </div>
