@@ -241,26 +241,6 @@
             gap: 8px;
         }
 
-        #user-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e1e4e8;
-            border-radius: 10px;
-            resize: none;
-            min-height: 44px;
-            max-height: 120px;
-            font-family: inherit;
-            font-size: 14px;
-            line-height: 1.4;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        #user-input:focus {
-            border-color: #0083b0;
-            box-shadow: 0 0 0 2px rgba(0, 131, 176, 0.1);
-        }
-
         .input-actions {
             display: flex;
             justify-content: flex-end;
@@ -271,12 +251,11 @@
         #send-message {
             position: absolute;
             right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
+            bottom: 10px; /* 调整底部间距 */
             background: none;
             border: none;
             cursor: pointer;
-            color: #0083b0; /* 使用主题蓝色 */
+            color: #0083b0;
             padding: 4px;
             display: flex;
             align-items: center;
@@ -584,8 +563,27 @@
 
         /* 调整输入框右侧内边距，为更小的图标留出空间 */
         #user-input {
-            padding-right: 32px;
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 32px; /* 为图标留出空间 */
+            border: 1px solid #e1e4e8;
+            border-radius: 10px;
+            resize: none;
+            min-height: 44px;
+            max-height: none; /* 移除最大高度限制 */
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.4;
+            outline: none;
+            transition: all 0.2s ease;
+            overflow-y: hidden; /* 隐藏滚动条 */
         }
+
+        #user-input:focus {
+            border-color: #0083b0;
+            box-shadow: 0 0 0 2px rgba(0, 131, 176, 0.1);
+        }
+
         .message-controls {
             display: flex;
             justify-content: space-between;

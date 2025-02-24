@@ -377,14 +377,21 @@ class ChatDialog {
             clearButton.addEventListener('click', () => this.clearMessages());
         }
 
-        // 其他现有的事件监听保持不变
         if (closeButton) {
             closeButton.addEventListener('click', () => this.hide());
         }
 
-        if (sendButton && input) {
-            sendButton.addEventListener('click', () => this.handleSendMessage());
+        if (input) {
+            // 添加输入框自适应高度功能
+            const adjustHeight = () => {
+                input.style.height = 'auto';
+                input.style.height = input.scrollHeight + 'px';
+            };
 
+            // 监听输入事件以调整高度
+            input.addEventListener('input', adjustHeight);
+
+            // 监听回车键发送消息
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -392,11 +399,12 @@ class ChatDialog {
                 }
             });
 
-            input.addEventListener('input', function() {
-                this.style.height = 'auto';
-                const newHeight = Math.min(this.scrollHeight, 120);
-                this.style.height = newHeight + 'px';
-            });
+            // 初始化时调整一次高度
+            adjustHeight();
+        }
+
+        if (sendButton && input) {
+            sendButton.addEventListener('click', () => this.handleSendMessage());
         }
 
         // 防止事件冒泡的代码保持不变
@@ -461,3 +469,48 @@ window.onerror = function(msg, url, line, col, error) {
 
 // 导出 ChatDialog 类
 window.ChatDialog = ChatDialog;
+
+const userInput = document.getElementById('user-input');
+
+function autoResizeTextarea() {
+    // 重置高度，以便正确计算新高度
+    userInput.style.height = 'auto';
+    // 设置新高度
+    userInput.style.height = userInput.scrollHeight + 'px';
+}
+
+// 在输入内容时自动调整高度
+userInput.addEventListener('input', autoResizeTextarea);
+
+// 在加载时初始化高度
+autoResizeTextarea();
+
+// 在窗口大小改变时重新计算高度
+window.addEventListener('resize', autoResizeTextarea);
+
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const userInput = document.getElementById('user-input');
+        
+        if (!userInput) {
+            console.error('Could not find element with id "user-input"');
+            return;
+        }
+
+        function autoResizeTextarea() {
+            try {
+                userInput.style.height = 'auto';
+                userInput.style.height = userInput.scrollHeight + 'px';
+            } catch (e) {
+                console.error('Error while resizing textarea:', e);
+            }
+        }
+
+        userInput.addEventListener('input', autoResizeTextarea);
+        autoResizeTextarea();
+        window.addEventListener('resize', autoResizeTextarea);
+        
+    } catch (e) {
+        console.error('Error in textarea auto-resize setup:', e);
+    }
+});
