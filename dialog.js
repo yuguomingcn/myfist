@@ -418,23 +418,28 @@ class ChatDialog {
             console.log('Dialog not initialized yet, cannot send message');
             return;
         }
-
+    
         const input = this.dialog.querySelector('#user-input');
         if (!input) {
             console.error('Input element not found');
             return;
         }
-
+    
         const message = input.value.trim();
         
         if (message) {
             input.value = '';
             input.style.height = 'auto';
             
+            // 确保切换到聊天视图
+            if (this.isIntroView) {
+                this.switchToChat();
+            }
+    
             this.addMessage(message, 'user');
-
+    
             const typingIndicator = this.showTypingIndicator();
-
+    
             try {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 this.removeTypingIndicator(typingIndicator);
