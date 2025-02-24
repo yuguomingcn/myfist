@@ -91,6 +91,41 @@ class ChatDialog {
             this.switchToIntro();  // 否则显示介绍页面
         }
     }
+
+    // 在 ChatDialog 类中添加这个方法，建议放在 switchToIntro 方法前（大约第94行）：
+    showIntroduction() {
+        if (!this.isInitialized) {
+            console.log('Dialog not initialized yet, cannot show introduction');
+            return;
+        }
+        
+        const introView = this.dialog.querySelector('#introduction-view');
+        const chatView = this.dialog.querySelector('#chat-view');
+        
+        if (introView && chatView) {
+            // 显示介绍视图，隐藏聊天视图
+            introView.style.display = 'block';
+            chatView.style.display = 'none';
+            this.isIntroView = true;
+            
+            // 重置聊天框高度（如果需要）
+            const messagesContainer = this.dialog.querySelector('#chat-messages');
+            if (messagesContainer) {
+                messagesContainer.scrollTop = 0;
+            }
+            
+            // 确保输入框是空的
+            const input = this.dialog.querySelector('#user-input');
+            if (input) {
+                input.value = '';
+                input.style.height = 'auto';
+            }
+        } else {
+            console.error('Required view elements not found');
+        }
+    }
+
+
     // 添加视图切换方法
     switchToIntro() {
         const introView = this.dialog.querySelector('#introduction-view');
