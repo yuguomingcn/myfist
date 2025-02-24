@@ -10,7 +10,6 @@ class ChatDialog {
         this.isVisible = false;
         this.isInitialized = false;
         this.isIntroView = true;  // 添加视图状态标记
-        console.log('ChatDialog initialized');
     }
 
     async create() {
@@ -68,6 +67,7 @@ class ChatDialog {
         }
     }
 
+    // 修改 show 方法，确保在有选中文本时切换到聊天视图
     async show(selectedText = '') {
         console.log('Showing dialog...');
         if (!this.dialog || !this.isInitialized) {
@@ -84,9 +84,12 @@ class ChatDialog {
 
         // 根据触发方式决定显示哪个视图
         if (selectedText) {
-            this.switchToChat();  // 如果有选中文本，直接切换到聊天视图
+            this.switchToChat();  // 如果有选中文本，切换到聊天视图
             this.addMessage(selectedText, 'user');
             this.addMessage('您想对这段文字做什么？', 'ai');
+        } else if (!this.isIntroView) {
+            // 如果当前在聊天视图且没有选中文本，保持在聊天视图
+            this.switchToChat();
         } else {
             this.switchToIntro();  // 否则显示介绍页面
         }
@@ -177,8 +180,20 @@ class ChatDialog {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}-message`;
         
+        // 确保滚动到底部的函数
+        const scrollToBottom = () => {
+            if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // 添加一个额外的检查，以确保真正滚动到底部
+                requestAnimationFrame(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                });
+            }
+        };
+
         if (type === 'ai') {
-            // 首先显示思考动画
+            // AI 消息的处理
             messageDiv.innerHTML = `
                 <div class="thinking-dots">
                     <span></span>
@@ -187,9 +202,8 @@ class ChatDialog {
                 </div>
             `;
             messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight; // 确保思考动画可见
+            scrollToBottom(); // 思考动画滚动到底部
     
-            // 等待思考动画显示 1.5 秒
             await new Promise(resolve => setTimeout(resolve, 1500));
     
             // 替换为实际消息内容
@@ -221,13 +235,12 @@ class ChatDialog {
             spans.forEach((span, index) => {
                 setTimeout(() => {
                     span.style.animation = 'typewriter 0.05s ease forwards';
-                    // 在最后一个字符显示完成后滚动到底部
                     if (index === spans.length - 1) {
                         setTimeout(() => {
-                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                            scrollToBottom(); // 打字效果完成后再次滚动到底部
                         }, 50);
                     }
-                }, index * 50); // 每个字符之间间隔 50ms
+                }, index * 50);
             });
     
         } else {
@@ -248,7 +261,7 @@ class ChatDialog {
                 </div>
             `;
             messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight; // 确保滚动到底部
+            scrollToBottom(); // 用户消息滚动到底部
         }
     
         // 添加复制和刷新功能
@@ -303,6 +316,21 @@ class ChatDialog {
         }
     }
 
+    // 添加清空消息的方法
+    clearMessages() {
+        const messagesContainer = this.dialog.querySelector('#chat-messages');
+        if (messagesContainer) {
+            // 显示确认对话框
+            if (confirm('确定要清空所有对话记录吗？')) {
+                // 清空消息容器
+                messagesContainer.innerHTML = '';
+                // 切换到介绍页面
+                this.switchToIntro();
+            }
+        }
+    }
+
+    // 修改 initializeEventListeners 方法，添加清空按钮的事件监听
     initializeEventListeners() {
         if (!this.dialog) {
             console.error('Dialog not created, cannot initialize event listeners');
@@ -310,9 +338,15 @@ class ChatDialog {
         }
 
         const closeButton = this.dialog.querySelector('#close-chat');
+        const clearButton = this.dialog.querySelector('#clear-messages');
         const sendButton = this.dialog.querySelector('#send-message');
         const input = this.dialog.querySelector('#user-input');
 
+        if (clearButton) {
+            clearButton.addEventListener('click', () => this.clearMessages());
+        }
+
+        // 其他现有的事件监听保持不变
         if (closeButton) {
             closeButton.addEventListener('click', () => this.hide());
         }
@@ -334,7 +368,7 @@ class ChatDialog {
             });
         }
 
-        // 防止事件冒泡
+        // 防止事件冒泡的代码保持不变
         this.dialog.addEventListener('mousedown', (e) => {
             e.stopPropagation();
         });
