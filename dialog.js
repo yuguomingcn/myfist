@@ -183,10 +183,8 @@ class ChatDialog {
         // 确保滚动到底部的函数
         const scrollToBottom = () => {
             if (messagesContainer) {
-                // 使用 requestAnimationFrame 确保在 DOM 更新后滚动
                 requestAnimationFrame(() => {
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    // 二次确认滚动位置
                     setTimeout(() => {
                         messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     }, 50);
@@ -197,22 +195,22 @@ class ChatDialog {
         if (type === 'ai') {
             // AI 消息的处理
             messageDiv.innerHTML = `
-                <div class="thinking-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
+            <div class="thinking-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
             messagesContainer.appendChild(messageDiv);
             scrollToBottom();
     
             await new Promise(resolve => setTimeout(resolve, 1500));
-    
+   
             // 替换为实际消息内容
             messageDiv.innerHTML = `
-                <div class="message-content typing-effect">
-                    ${text.split('').map(char => `<span>${char}</span>`).join('')}
-                </div>
+            <div class="message-content">
+                <div class="typing-text typing-text-cursor"></div>
+            </div>
                 <div class="message-actions">
                     <button class="message-action-button refresh-button" title="刷新">
                     <svg viewBox="0 0 24 24" sizes=""><path fill="#666666" d="M11.36 8.009a.5.5 0 01-.565.701l-6.13-1.43a.5.5 0 01-.348-.679L6.861.49a.5.5 0 01.913-.023l.985 2.072A9.978 9.978 0 0112 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12v-.024c0-.267.222-.476.488-.476h2.03c.27 0 .482.23.482.5 0 3.864 3.136 7 7 7s7-3.136 7-7a7.003 7.003 0 00-8.94-6.727l1.3 2.736z"></path></svg>
@@ -225,26 +223,23 @@ class ChatDialog {
                 </div>
             `;
     
-            const messageContent = messageDiv.querySelector('.message-content');
-            const spans = messageContent.querySelectorAll('span');
+            const typingText = messageDiv.querySelector('.typing-text');
+            let currentText = '';
     
-            // 显示消息内容
-            messageContent.classList.add('show');
-    
-            // 为每个字符添加延迟动画，并确保滚动跟随
-            for (let i = 0; i < spans.length; i++) {
-                await new Promise(resolve => {
-                    setTimeout(() => {
-                        spans[i].style.animation = 'typewriter 0.05s ease forwards';
-                        if (i % 5 === 0 || i === spans.length - 1) { // 每5个字符或最后一个字符时滚动
-                            scrollToBottom();
-                        }
-                        resolve();
-                    }, 50);
-                });
+            // 逐字打印文本
+            for (let i = 0; i < text.length; i++) {
+                currentText += text[i];
+                typingText.textContent = currentText;
+                await new Promise(resolve => setTimeout(resolve, 30));
+                if (i % 5 === 0 || i === text.length - 1) {
+                    scrollToBottom();
+                }
             }
-    
-            // 动画完成后移除新消息类（防止重复动画）
+
+            // 动画完成后去掉光标效果
+            typingText.classList.remove('typing-text-cursor');
+
+            // 动画完成后移除新消息类
             setTimeout(() => {
                 messageDiv.classList.remove('new-message');
             }, 300);

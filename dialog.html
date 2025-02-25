@@ -173,6 +173,14 @@
             max-width: 100%;
         }
 
+        /* 添加新的打字效果样式 */
+        .typing-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: pre-wrap;
+            vertical-align: bottom;
+        }
+
         /* 用户消息样式 */
         .user-message .message-content {
             background: linear-gradient(135deg, #00b4db, #0083b0);  /* 改为蓝色渐变 */
@@ -183,11 +191,20 @@
 
         /* AI消息样式 */
         .ai-message .message-content {
-            background: #e4e6eb;     /* 改为灰色 */
+            background: #e4e6eb;
             color: #2c3e50;
             border-bottom-right-radius: 10px;
             border-bottom-left-radius: 4px;
         }
+        .typing-text-cursor::after {
+            content: "|";
+            margin-left: 2px;
+            animation: cursor-blink 1s step-end infinite;
+            color: #0083b0;
+        }
+
+        
+
 
         .message-actions {
             display: flex;
@@ -314,19 +331,26 @@
                 width: 100%;
             }
         }
-
-        .ai-message .message-content.typing-effect {
-        visibility: hidden;
-    }
-
-        .ai-message .message-content.typing-effect.show {
+        .message-content.typing-effect {
             visibility: visible;
+            position: relative;
+            white-space: pre-wrap;
         }
 
-        .ai-message .message-content.typing-effect.show span {
-            display: inline-block;
-            white-space: pre-wrap; /* 改为 pre-wrap 以正确处理换行 */
-            opacity: 0;
+        .message-content.typing-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #e4e6eb; /* AI消息背景色 */
+            animation: typing var(--typing-duration) steps(var(--text-length)) forwards;
+        }
+
+        @keyframes typing {
+            from { clip-path: inset(0 0 0 0); }
+            to { clip-path: inset(0 100% 0 0); }
         }
 
         /* 思考动画样式 */
@@ -376,6 +400,11 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        @keyframes cursor-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         /* 介绍页面样式 */
