@@ -470,6 +470,16 @@ console.log('dialog.js loaded');
             introContent: introContent ? 'Found' : 'Not found',
             backButton: backButton ? 'Found' : 'Not found'
         });
+        // 防止点击输入区域空白处时触发输入框焦点
+        const chatInput = this.dialog.querySelector('.chat-input');
+        if (chatInput) {
+            chatInput.addEventListener('mousedown', (e) => {
+                // 如果点击的不是输入框本身，阻止默认行为
+                if (e.target !== this.dialog.querySelector('#user-input')) {
+                    e.preventDefault();
+                }
+            });
+        }
     
         // 监听登录按钮点击
         if (loginBtn) {

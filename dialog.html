@@ -14,6 +14,24 @@
             line-height: 1.5;
             color: #24292e;
         }
+       /* 将全局滚动条样式改为只针对我们的应用容器 */
+        .chat-container ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .chat-container ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .chat-container ::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
 
         .chat-container,
         .chat-container * {
@@ -106,24 +124,6 @@
             gap: 3px;
             height: 0;
             scroll-behavior: smooth; /* 添加平滑滚动效果 */
-        }
-        /* 美化滚动条样式 */
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #666;
         }
 
         .message {
@@ -259,6 +259,7 @@
             z-index: 10;
             box-sizing: border-box !important;
             width: 100% !important;
+            user-select: none; 
         }
 
         .input-area {
@@ -413,12 +414,14 @@
             overflow-y: auto;
             padding: 20px;
             background: #f8f9fa;
+            /* 确保滚动行为平滑 */
+            scroll-behavior: smooth;
         }
 
-        .intro-content {
+        #login-view .intro-content {
             max-width: 100%;
             margin: 0 auto;
-            margin-bottom: 20px;  /* 添加底部边距，避免内容被输入框遮挡 */
+            padding-bottom: 20px;
         }
 
         .intro-content h2 {
@@ -596,6 +599,7 @@
             position: relative;
             width: 100% !important;
             box-sizing: border-box !important;
+            pointer-events: auto;  /* 确保输入框可以接收事件 */
         }
 
         /* 调整输入框右侧内边距，为更小的图标留出空间 */
@@ -615,11 +619,18 @@
             outline: none;
             transition: all 0.2s ease;
             overflow-y: hidden; /* 隐藏滚动条 */
+            pointer-events: auto;  /* 确保输入框可以接收事件 */
+        }
+
+        /* 当输入框未获得焦点时隐藏插入符号 */
+        #user-input:not(:focus) {
+            caret-color: transparent;
         }
 
         #user-input:focus {
             border-color: #0083b0;
             box-shadow: 0 0 0 2px rgba(0, 131, 176, 0.1);
+            caret-color: #0083b0;  /* 使用主题色作为插入符号颜色 */
         }
 
         .message-controls {
@@ -840,10 +851,7 @@
         <div class="chat-header">
             <h3>DEEPHEY.AI</DEEPHEY></h3>
             <div class="header-actions">
-                <button id="clear-messages" title="清空消息">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M19 6h-4V5c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v1H5c-.6 0-1 .4-1 1s.4 1 1 1h.5l1.7 12.3c.2 1 1 1.7 2 1.7h7.6c1 0 1.8-.7 2-1.7L20.5 8h.5c.6 0 1-.4 1-1s-.4-1-1-1zm-9-1h4v1h-4V5z"/>
-                    </svg>
+                <button id="clear-messages" title="清空消息"><svg t="1740486172067" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="11573" width="200" height="200"><path d="M479.3 863.6L899.9 443c37.4-37.4 37.4-98.3 0-135.8L716.7 124.1C698.5 106 674.4 96 648.7 96c-25.8 0-50.4 10.8-68.6 29l-455 455c-18.2 18.2-29 42.8-29 68.6 0 25.7 9.9 49.9 28.1 68l183.1 183.2c18.1 18.1 42.2 28.1 67.9 28.1 3 0 5.9-0.1 8.8-0.4v0.1h512c17.7 0 32-14.3 32-32s-14.3-32-32-32H479.3z m-126.8-9L169.4 671.5c-6-6-9.4-14.1-9.4-22.6 0-8.5 3.3-16.6 9.4-22.6l104.9-104.9 228.4 228.4-104.9 104.8c-6 6-14.1 9.4-22.6 9.4-8.6 0-16.6-3.3-22.7-9.4z" p-id="11574" fill="#ffffff"></path></svg>
                 </button>
                 <button id="close-chat">✕</button>
             </div>
