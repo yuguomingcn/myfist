@@ -72,15 +72,28 @@ console.log('dialog.js loaded');
         }
     }
 
-    // 修改 show 方法，确保在有选中文本时切换到聊天视图
     show(selectedText = '') {
         console.log('Show called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
         
-        if (this.isTransitioning || this.isVisible) {
-            console.log('Show canceled - dialog is transitioning or already visible');
+        if (this.isTransitioning) {
+            console.log('Show canceled - dialog is transitioning');
             return;
         }
-
+    
+        // 如果对话框已经显示，并且有新的选中文本，直接切换到聊天视图并添加消息
+        if (this.isVisible && selectedText) {
+            this.switchToChat();
+            this.addMessage(selectedText, 'user');
+            this.addMessage('您想对这段文字做什么？', 'ai');
+            return;
+        }
+    
+        // 如果对话框已经显示但没有新的选中文本，不做任何操作
+        if (this.isVisible) {
+            console.log('Dialog already visible');
+            return;
+        }
+    
         this.isTransitioning = true;
         this.dialog.style.display = 'block';
         
@@ -101,7 +114,7 @@ console.log('dialog.js loaded');
                 this.switchToIntro();
             }
         });
-
+    
         // 监听过渡结束
         const handleTransitionEnd = () => {
             this.isTransitioning = false;
@@ -110,7 +123,6 @@ console.log('dialog.js loaded');
         };
         this.dialog.addEventListener('transitionend', handleTransitionEnd);
     }
-
 
     // 在 ChatDialog 类中添加这个方法，建议放在 switchToIntro 方法前（大约第94行）：
     showIntroduction() {
@@ -152,9 +164,18 @@ console.log('dialog.js loaded');
         const chatView = this.dialog.querySelector('#chat-view');
         
         if (introView && chatView) {
+            // 确保两个视图都有正确的显示状态
             introView.style.display = 'none';
             chatView.style.display = 'flex';
             this.isIntroView = false;
+            
+            // 确保聊天视图中的元素可见
+            const messagesContainer = chatView.querySelector('#chat-messages');
+            if (messagesContainer) {
+                messagesContainer.style.display = 'flex';
+                // 滚动到底部
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
         } else {
             console.error('Views not found:', {
                 introView: !!introView,
@@ -169,9 +190,23 @@ console.log('dialog.js loaded');
         const chatView = this.dialog.querySelector('#chat-view');
         
         if (introView && chatView) {
+            // 确保两个视图都有正确的显示状态
             introView.style.display = 'block';
             chatView.style.display = 'none';
             this.isIntroView = true;
+            
+            // 重置聊天视图
+            const messagesContainer = chatView.querySelector('#chat-messages');
+            if (messagesContainer) {
+                messagesContainer.scrollTop = 0;
+            }
+            
+            // 重置输入框
+            const input = chatView.querySelector('#user-input');
+            if (input) {
+                input.value = '';
+                input.style.height = 'auto';
+            }
         } else {
             console.error('Views not found:', {
                 introView: !!introView,
@@ -202,14 +237,18 @@ console.log('dialog.js loaded');
         this.dialog.addEventListener('transitionend', handleTransitionEnd);
     }
 
-    toggle(selectedText = '') {
+    async toggle(selectedText = '') {
         console.log('Toggle called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
         
         if (this.isTransitioning) {
             console.log('Toggle canceled - dialog is transitioning');
             return;
         }
-
+    
+        if (!this.dialog) {
+            await this.create();
+        }
+    
         if (this.isVisible) {
             this.hide();
         } else {
@@ -583,6 +622,23 @@ console.log('dialog.js loaded');
                 this.removeTypingIndicator(typingIndicator);
                 this.addMessage('抱歉，处理消息时出现错误。', 'ai');
             }
+        }
+    }
+    updateViewState(selectedText = '') {
+        if (selectedText) {
+            this.switchToChat();
+            this.addMessage(selectedText, 'user');
+            this.addMessage('您想对这段文字做什么？', 'ai');
+        } else if (this.isVisible) {
+            // 保持当前视图状态
+            if (this.isIntroView) {
+                this.switchToIntro();
+            } else {
+                this.switchToChat();
+            }
+        } else {
+            // 默认显示介绍视图
+            this.switchToIntro();
         }
     }
 }
