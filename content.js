@@ -3,16 +3,48 @@
  * Last Updated: 2025-02-21 07:07:58
  * Author: yuguomingcn
  */
-console.log('content.js loaded');
+// 在文件顶部，修改 chatDialog 的声明
 let chatDialog = null;
+let isDialogInitializing = false;
 
-// 监听来自扩展图标的消息
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "toggleDialog") {
-        if (!chatDialog) {
-            chatDialog = new ChatDialog();  // 现在可以直接使用 ChatDialog
+        console.log('Toggle dialog request received');
+        
+        // 如果正在初始化，则忽略请求
+        if (isDialogInitializing) {
+            console.log('Dialog initialization in progress, ignoring request');
+            return;
         }
-        chatDialog.toggle();
+
+        // 如果 dialog 不存在，创建新实例
+        if (!chatDialog) {
+            console.log('Creating new ChatDialog instance');
+            isDialogInitializing = true;
+            chatDialog = new ChatDialog();
+            chatDialog.create().then(() => {
+                console.log('ChatDialog instance created and initialized');
+                isDialogInitializing = false;
+                chatDialog.toggle();
+            }).catch(error => {
+                console.error('Failed to create ChatDialog:', error);
+                isDialogInitializing = false;
+                chatDialog = null;
+            });
+        } else {
+            // 如果实例已存在，直接切换显示状态
+            console.log('Using existing ChatDialog instance');
+            chatDialog.toggle();
+        }
+    }
+});
+
+// 添加清理功能
+window.addEventListener('unload', () => {
+    if (chatDialog) {
+        chatDialog.hide();
+        chatDialog = null;
     }
 });
 

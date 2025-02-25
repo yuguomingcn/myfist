@@ -9,16 +9,21 @@ console.log('dialog.js loaded');
     const originalChatDialog = window.ChatDialog;
 
     class ChatDialog {
-    constructor() {
-        this.dialog = null;
-        this.isVisible = false;
-        this.isInitialized = false;
-        this.isIntroView = true;  // 添加视图状态标记
-    }
+        constructor() {
+            this.dialog = null;
+            this.isVisible = false;
+            this.isInitialized = false;
+            this.isIntroView = true;
+            this.isTransitioning = false; // 添加过渡状态标记
+        }
 
     async create() {
         console.log('Creating dialog...');
-        // 创建主对话框容器
+        if (this.dialog) {
+            console.log('Dialog already exists');
+            return;
+        }
+
         this.dialog = document.createElement('div');
         this.dialog.id = 'ai-chat-dialog';
         this.dialog.style.cssText = `
@@ -31,28 +36,25 @@ console.log('dialog.js loaded');
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             transition: right 0.3s ease;
             z-index: 2147483647;
+            display: block;
         `;
 
-        // 先将dialog添加到文档中
         document.body.appendChild(this.dialog);
 
+
         try {
-            // 加载外部HTML
             const response = await fetch(chrome.runtime.getURL('dialog.html'));
             const html = await response.text();
             
-            // 提取 style 内容
+            // 提取和添加样式
             const styleMatch = html.match(/<style>([\s\S]*?)<\/style>/);
-            const styleContent = styleMatch ? styleMatch[1] : '';
-            
-            // 创建并添加样式
-            if (styleContent) {
+            if (styleMatch) {
                 const styleElement = document.createElement('style');
-                styleElement.textContent = styleContent;
+                styleElement.textContent = styleMatch[1];
                 document.head.appendChild(styleElement);
             }
             
-            // 提取和添加 body 内容
+            // 添加内容
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const content = doc.querySelector('.chat-container');
@@ -61,43 +63,54 @@ console.log('dialog.js loaded');
                 this.dialog.appendChild(content);
                 this.initializeEventListeners();
                 this.isInitialized = true;
-                this.showIntroduction(); // 替换原来的 addWelcomeMessage
+                this.showIntroduction();
                 console.log('Dialog initialization completed');
-            } else {
-                console.error('Failed to find .chat-container in loaded HTML');
             }
         } catch (error) {
             console.error('Error loading dialog HTML:', error);
+            throw error;
         }
     }
 
     // 修改 show 方法，确保在有选中文本时切换到聊天视图
-    async show(selectedText = '') {
-        console.log('Showing dialog...');
-        if (!this.dialog || !this.isInitialized) {
-            await this.create();
-        }
-
-        if (!this.isInitialized) {
-            console.log('Dialog not initialized yet, waiting...');
+    show(selectedText = '') {
+        console.log('Show called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
+        
+        if (this.isTransitioning || this.isVisible) {
+            console.log('Show canceled - dialog is transitioning or already visible');
             return;
         }
 
-        this.dialog.style.right = '0';
-        this.isVisible = true;
+        this.isTransitioning = true;
+        this.dialog.style.display = 'block';
+        
+        // 强制重排
+        this.dialog.offsetHeight;
+        
+        requestAnimationFrame(() => {
+            this.dialog.style.right = '0';
+            this.isVisible = true;
+            
+            if (selectedText) {
+                this.switchToChat();
+                this.addMessage(selectedText, 'user');
+                this.addMessage('您想对这段文字做什么？', 'ai');
+            } else if (!this.isIntroView) {
+                this.switchToChat();
+            } else {
+                this.switchToIntro();
+            }
+        });
 
-        // 根据触发方式决定显示哪个视图
-        if (selectedText) {
-            this.switchToChat();  // 如果有选中文本，切换到聊天视图
-            this.addMessage(selectedText, 'user');
-            this.addMessage('您想对这段文字做什么？', 'ai');
-        } else if (!this.isIntroView) {
-            // 如果当前在聊天视图且没有选中文本，保持在聊天视图
-            this.switchToChat();
-        } else {
-            this.switchToIntro();  // 否则显示介绍页面
-        }
+        // 监听过渡结束
+        const handleTransitionEnd = () => {
+            this.isTransitioning = false;
+            this.dialog.removeEventListener('transitionend', handleTransitionEnd);
+            console.log('Show transition completed');
+        };
+        this.dialog.addEventListener('transitionend', handleTransitionEnd);
     }
+
 
     // 在 ChatDialog 类中添加这个方法，建议放在 switchToIntro 方法前（大约第94行）：
     showIntroduction() {
@@ -133,35 +146,70 @@ console.log('dialog.js loaded');
     }
 
 
-    // 添加视图切换方法
-    switchToIntro() {
-        const introView = this.dialog.querySelector('#introduction-view');
-        const chatView = this.dialog.querySelector('#chat-view');
-        if (introView && chatView) {
-            introView.style.display = 'block';
-            chatView.style.display = 'none';
-            this.isIntroView = true;
-        }
-    }
-
     switchToChat() {
+        console.log('Switching to chat view...');
         const introView = this.dialog.querySelector('#introduction-view');
         const chatView = this.dialog.querySelector('#chat-view');
+        
         if (introView && chatView) {
             introView.style.display = 'none';
             chatView.style.display = 'flex';
             this.isIntroView = false;
+        } else {
+            console.error('Views not found:', {
+                introView: !!introView,
+                chatView: !!chatView
+            });
+        }
+    }
+
+    switchToIntro() {
+        console.log('Switching to intro view...');
+        const introView = this.dialog.querySelector('#introduction-view');
+        const chatView = this.dialog.querySelector('#chat-view');
+        
+        if (introView && chatView) {
+            introView.style.display = 'block';
+            chatView.style.display = 'none';
+            this.isIntroView = true;
+        } else {
+            console.error('Views not found:', {
+                introView: !!introView,
+                chatView: !!chatView
+            });
         }
     }
 
     hide() {
-        if (this.dialog) {
-            this.dialog.style.right = '-350px';
-            this.isVisible = false;
+        console.log('Hide called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
+        
+        if (this.isTransitioning || !this.isVisible) {
+            console.log('Hide canceled - dialog is transitioning or already hidden');
+            return;
         }
+
+        this.isTransitioning = true;
+        this.dialog.style.right = '-350px';
+        
+        // 监听过渡结束
+        const handleTransitionEnd = () => {
+            this.isVisible = false;
+            this.isTransitioning = false;
+            this.switchToIntro();
+            this.dialog.removeEventListener('transitionend', handleTransitionEnd);
+            console.log('Hide transition completed');
+        };
+        this.dialog.addEventListener('transitionend', handleTransitionEnd);
     }
 
     toggle(selectedText = '') {
+        console.log('Toggle called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
+        
+        if (this.isTransitioning) {
+            console.log('Toggle canceled - dialog is transitioning');
+            return;
+        }
+
         if (this.isVisible) {
             this.hide();
         } else {
