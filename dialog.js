@@ -368,6 +368,50 @@ console.log('dialog.js loaded');
             console.error('Dialog not created, cannot initialize event listeners');
             return;
         }
+    
+        console.log('Initializing event listeners');
+    
+        // 使用正确的 ID 选择器
+        const loginBtn = this.dialog.querySelector('#loginButton');
+        const loginModal = this.dialog.querySelector('#login-modal');
+        const closeLoginModal = this.dialog.querySelector('.close-login-modal');
+    
+        console.log('Elements found:', {
+            loginBtn: loginBtn ? 'Found' : 'Not found',
+            loginModal: loginModal ? 'Found' : 'Not found',
+            closeLoginModal: closeLoginModal ? 'Found' : 'Not found'
+        });
+    
+        if (loginBtn) {
+            console.log('Adding click event to login button');
+            loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Login button clicked');
+                if (loginModal) {
+                    loginModal.classList.add('active');
+                    console.log('Modal activated');
+                }
+            });
+        }
+    
+        if (closeLoginModal) {
+            closeLoginModal.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Close button clicked');
+                loginModal.classList.remove('active');
+            });
+        }
+    
+        if (loginModal) {
+            loginModal.addEventListener('click', (e) => {
+                if (e.target === loginModal) {
+                    console.log('Clicked outside modal');
+                    loginModal.classList.remove('active');
+                }
+            });
+        }
 
         const closeButton = this.dialog.querySelector('#close-chat');
         const clearButton = this.dialog.querySelector('#clear-messages');
