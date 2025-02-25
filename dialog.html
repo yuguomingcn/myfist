@@ -705,65 +705,57 @@
             background: #f0f9fc;
             transform: translateY(-1px);
         }
-/* 登录模态框样式 */
-.login-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1001;
-    justify-content: center;
-    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
-.login-modal.active {
-    display: flex !important; /* 添加 !important 确保样式生效 */
-}
-
-.login-modal-content {
-    background: white;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    animation: modalAppear 0.3s ease;
-}
-
-.login-modal-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.login-modal-header h3 {
-    margin: 0;
-    font-size: 18px;
-    color: #2c3e50;
-}
-
-.close-login-modal {
-    background: none;
+.login-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #0083b0;
+    color: white;
     border: none;
-    font-size: 20px;
-    color: #666;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+}
+
+.login-submit-btn:hover {
+    background: #006d93;
+}
+
+.back-button {
+    padding: 12px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    color: #666;
+    font-size: 15px;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.close-login-modal:hover {
-    background: #f5f5f5;
-    color: #333;
-}
-
-.login-modal-body {
-    padding: 24px;
+.back-button:hover {
+    background: #e8e8e8;
 }
 
 .google-login-btn {
@@ -781,15 +773,19 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
 .google-login-btn:hover {
     background: #f8f8f8;
     border-color: #ccc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
-
-.google-login-btn img {
+.google-login-btn svg {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
+}
+
+.google-login-btn span {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .login-divider {
@@ -863,84 +859,92 @@
                     </div>
                 </div>
             </div>
-            <!-- 在 <div class="views-container"> 内添加，紧接在确认对话框后面 -->
-        <!-- 登录模态框 -->
-        <!-- 在确认对话框后面添加登录模态框 -->
-<!-- 登录模态框 -->
-<div id="login-modal" class="login-modal">
-    <div class="login-modal-content">
-        <div class="login-modal-header">
-            <h3>登录 DEEPHEY.AI</h3>
-            <button class="close-login-modal">✕</button>
-        </div>
-        <div class="login-modal-body">
-            <!-- Google登录按钮 -->
-            <button class="google-login-btn">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=" alt="Google Logo">
-                使用Google账号登录
-            </button>
-            <div class="login-divider">
-                <span>或</span>
-            </div>
-            <!-- 邮箱登录表单 -->
-            <div class="email-login-form">
-                <div class="form-group">
-                    <label for="email">邮箱地址</label>
-                    <input type="email" id="email" placeholder="请输入邮箱地址">
-                </div>
-                <div class="form-group verification-code">
-                    <label for="verification-code">验证码</label>
-                    <div class="verification-code-container">
-                        <input type="text" id="verification-code" placeholder="请输入验证码">
-                        <button class="send-code-btn">发送验证码</button>
-                    </div>
-                </div>
-                <button class="login-submit-btn">登录</button>
-            </div>
-        </div>
-    </div>
-</div>
             
             <!-- 介绍页面 -->
+            <!-- 修改 introduction-view 部分 -->
             <div id="introduction-view">
-                <div class="intro-content">
-                    <h2>欢迎使用 AI 文本助手</h2>
-                    <div class="auth-buttons-container">
-                        <button id="loginButton" class="auth-button login-btn">登录</button>
-                        <button class="auth-button register-btn">注册</button>
+                <!-- 登录视图 -->
+                <div id="login-view" style="display: none;">
+                    <div class="intro-content">
+                        <h2>登录 DEEPHEY.AI</h2>
+                        <div class="login-content" style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                            <!-- Google登录按钮 -->
+                            <button class="google-login-btn">
+                                <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12
+                                c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24
+                                c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657
+                                C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36
+                                c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571
+                                c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                                </svg>
+                                <span>使用 Google 账号登录</span>
+                            </button>
+                            <div class="login-divider">
+                                <span>或</span>
+                            </div>
+                            <!-- 邮箱登录表单 -->
+                            <div class="email-login-form">
+                                <div class="form-group">
+                                    <label for="email">邮箱地址</label>
+                                    <input type="email" id="email" placeholder="请输入邮箱地址">
+                                </div>
+                                <div class="form-group verification-code">
+                                    <label for="verification-code">验证码</label>
+                                    <div class="verification-code-container">
+                                        <input type="text" id="verification-code" placeholder="请输入验证码">
+                                        <button class="send-code-btn">发送验证码</button>
+                                    </div>
+                                </div>
+                                <button class="login-submit-btn">登录</button>
+                                <button id="back-to-intro" class="back-button" style="margin-top: 16px; width: 100%;">返回</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-section">
-                        <h3>📝 文本处理</h3>
-                        <ul>
-                            <li>智能分析和总结长文本</li>
-                            <li>提取关键信息和重点</li>
-                            <li>优化文本格式和结构</li>
-                        </ul>
-                    </div>
-                    <div class="feature-section">
-                        <h3>🔍 内容增强</h3>
-                        <ul>
-                            <li>智能扩展和改写文本</li>
-                            <li>多语言翻译</li>
-                            <li>语法和拼写检查</li>
-                        </ul>
-                    </div>
-                    <div class="feature-section">
-                        <h3>💡 创意助手</h3>
-                        <ul>
-                            <li>提供写作建议和灵感</li>
-                            <li>生成相关内容</li>
-                            <li>改进表达方式</li>
-                        </ul>
-                    </div>
-                    <div class="feature-section">
-                        <h3>🚀 使用方法</h3>
-                        <ul>
-                            <li>选择网页中的任意文本</li>
-                            <li>点击右键菜单中的"AI 助手"</li>
-                            <li>在对话框中输入你的需求</li>
-                            <li>直接在此处提问，开始对话</li>
-                        </ul>
+                </div>
+                <div id="intro-content">
+                    <div class="intro-content">
+                        <h2>欢迎使用 AI 文本助手</h2>
+                        <div class="auth-buttons-container">
+                            <button id="loginButton" class="auth-button login-btn">登录</button>
+                            <button class="auth-button register-btn">注册</button>
+                        </div>
+                        <div class="feature-section">
+                            <h3>📝 文本处理</h3>
+                            <ul>
+                                <li>智能分析和总结长文本</li>
+                                <li>提取关键信息和重点</li>
+                                <li>优化文本格式和结构</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <h3>🔍 内容增强</h3>
+                            <ul>
+                                <li>智能扩展和改写文本</li>
+                                <li>多语言翻译</li>
+                                <li>语法和拼写检查</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <h3>💡 创意助手</h3>
+                            <ul>
+                                <li>提供写作建议和灵感</li>
+                                <li>生成相关内容</li>
+                                <li>改进表达方式</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <h3>🚀 使用方法</h3>
+                            <ul>
+                                <li>选择网页中的任意文本</li>
+                                <li>点击右键菜单中的"AI 助手"</li>
+                                <li>在对话框中输入你的需求</li>
+                                <li>直接在此处提问，开始对话</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

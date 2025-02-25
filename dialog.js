@@ -365,51 +365,84 @@ console.log('dialog.js loaded');
     // 修改 initializeEventListeners 方法，添加清空按钮的事件监听
     initializeEventListeners() {
         if (!this.dialog) {
-            console.error('Dialog not created, cannot initialize event listeners');
+            console.log('Dialog not created, cannot initialize event listeners');
             return;
         }
     
         console.log('Initializing event listeners');
     
-        // 使用正确的 ID 选择器
+        // 获取元素
         const loginBtn = this.dialog.querySelector('#loginButton');
-        const loginModal = this.dialog.querySelector('#login-modal');
-        const closeLoginModal = this.dialog.querySelector('.close-login-modal');
+        const loginView = this.dialog.querySelector('#login-view');
+        const introContent = this.dialog.querySelector('#intro-content');
+        const backButton = this.dialog.querySelector('#back-to-intro');
     
         console.log('Elements found:', {
             loginBtn: loginBtn ? 'Found' : 'Not found',
-            loginModal: loginModal ? 'Found' : 'Not found',
-            closeLoginModal: closeLoginModal ? 'Found' : 'Not found'
+            loginView: loginView ? 'Found' : 'Not found',
+            introContent: introContent ? 'Found' : 'Not found',
+            backButton: backButton ? 'Found' : 'Not found'
         });
     
+        // 监听登录按钮点击
         if (loginBtn) {
             console.log('Adding click event to login button');
             loginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Login button clicked');
-                if (loginModal) {
-                    loginModal.classList.add('active');
-                    console.log('Modal activated');
+                if (loginView && introContent) {
+                    loginView.style.display = 'block';
+                    introContent.style.display = 'none';
+                    console.log('Switched to login view');
+                } else {
+                    console.log('Login view or intro content not found:', {
+                        loginView: !!loginView,
+                        introContent: !!introContent
+                    });
                 }
             });
         }
     
-        if (closeLoginModal) {
-            closeLoginModal.addEventListener('click', (e) => {
+        // 监听返回按钮点击
+        if (backButton) {
+            console.log('Adding click event to back button');
+            backButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Close button clicked');
-                loginModal.classList.remove('active');
+                console.log('Back button clicked');
+                if (loginView && introContent) {
+                    loginView.style.display = 'none';
+                    introContent.style.display = 'block';
+                    console.log('Switched back to intro view');
+                }
             });
         }
     
-        if (loginModal) {
-            loginModal.addEventListener('click', (e) => {
-                if (e.target === loginModal) {
-                    console.log('Clicked outside modal');
-                    loginModal.classList.remove('active');
-                }
+        // 监听 Google 登录按钮
+        const googleLoginBtn = this.dialog.querySelector('.google-login-btn');
+        if (googleLoginBtn) {
+            googleLoginBtn.addEventListener('click', () => {
+                console.log('Google login button clicked');
+                // 这里添加 Google 登录逻辑
+            });
+        }
+    
+        // 监听邮箱登录按钮
+        const loginSubmitBtn = this.dialog.querySelector('.login-submit-btn');
+        if (loginSubmitBtn) {
+            loginSubmitBtn.addEventListener('click', () => {
+                console.log('Login submit button clicked');
+                // 这里添加邮箱登录逻辑
+            });
+        }
+    
+        // 监听发送验证码按钮
+        const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
+        if (sendCodeBtn) {
+            sendCodeBtn.addEventListener('click', () => {
+                console.log('Send code button clicked');
+                // 这里添加发送验证码逻辑
             });
         }
 
