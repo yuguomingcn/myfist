@@ -505,7 +505,6 @@
             flex: 1;
             overflow: hidden; /* 改为 hidden */
             background: #f8f9fa;
-            display: flex;
             flex-direction: column;
         }
 
@@ -907,7 +906,7 @@
                 <div class="intro-content">
                     <h2>欢迎使用 AI 文本助手</h2>
                     <div class="auth-buttons-container">
-                        <button class="auth-button login-btn">登录</button>
+                        <button id="loginButton" class="auth-button login-btn">登录</button>
                         <button class="auth-button register-btn">注册</button>
                     </div>
                     <div class="feature-section">
@@ -990,49 +989,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 获取登录按钮和模态框
-            const loginBtn = document.querySelector('.auth-button.login-btn');
-            const loginModal = document.getElementById('login-modal');
-            const closeLoginModal = document.querySelector('.close-login-modal');
-    
-            // 为登录按钮添加点击事件
-            if (loginBtn) {
-                loginBtn.addEventListener('click', () => {
-                    console.log('Login button clicked');
-                    if (loginModal) {
-                        loginModal.classList.add('active');
-                        console.log('Modal should be visible now');
-                    }
-                });
-            }
-    
-            // 关闭按钮点击事件
-            if (closeLoginModal) {
-                closeLoginModal.addEventListener('click', () => {
-                    if (loginModal) {
-                        loginModal.classList.remove('active');
-                    }
-                });
-            }
-    
-            // 点击模态框外部关闭
-            if (loginModal) {
-                loginModal.addEventListener('click', (e) => {
-                    if (e.target === loginModal) {
-                        loginModal.classList.remove('active');
-                    }
-                });
-            }
-    
-            // 添加调试日志
-            console.log('DOM loaded, elements found:', {
-                loginBtn: !!loginBtn,
-                loginModal: !!loginModal,
-                closeLoginModal: !!closeLoginModal
-            });
-        });
-    </script>
+    <script src="dialog.js"></script>
 </body>
 </html>

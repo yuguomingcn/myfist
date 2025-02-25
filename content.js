@@ -3,7 +3,18 @@
  * Last Updated: 2025-02-21 07:07:58
  * Author: yuguomingcn
  */
+console.log('content.js loaded');
 let chatDialog = null;
+
+// 监听来自扩展图标的消息
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "toggleDialog") {
+        if (!chatDialog) {
+            chatDialog = new ChatDialog();  // 现在可以直接使用 ChatDialog
+        }
+        chatDialog.toggle();
+    }
+});
 
 // 创建功能按钮容器
 function createActionButtons() {
@@ -331,3 +342,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chatDialog.toggle();
     }
 });
+// 添加全局错误处理
+window.onerror = function(msg, url, line, col, error) {
+    console.error('Global error:', msg, 'at', url, 'line:', line);
+    return false;
+};
+
+// 导出 ChatDialog 类
+window.ChatDialog = ChatDialog;

@@ -3,8 +3,12 @@
  * Created: 2025-02-22 06:34:23
  * Author: yuguomingcn
  */
+console.log('dialog.js loaded');
+(function() {
+    // 保存原来的 ChatDialog（如果存在的话）
+    const originalChatDialog = window.ChatDialog;
 
-class ChatDialog {
+    class ChatDialog {
     constructor() {
         this.dialog = null;
         this.isVisible = false;
@@ -457,12 +461,12 @@ class ChatDialog {
         }
     }
 }
-
-// 添加全局错误处理
-window.onerror = function(msg, url, line, col, error) {
-    console.error('Global error:', msg, 'at', url, 'line:', line);
-    return false;
-};
-
-// 导出 ChatDialog 类
+// 将 ChatDialog 暴露到全局，但提供冲突处理
 window.ChatDialog = ChatDialog;
+
+// 提供一个恢复原始值的方法（如果需要的话）
+window.ChatDialog.noConflict = function() {
+    window.ChatDialog = originalChatDialog;
+    return ChatDialog;
+};
+})();
