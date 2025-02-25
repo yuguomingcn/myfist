@@ -666,6 +666,46 @@
             color: #0083b0;
             cursor: pointer;
         }
+
+
+        
+        .auth-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .auth-button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            background: #0083b0;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background: #006d93;
+            transform: translateY(-1px);
+        }
+
+        .register-btn {
+            background: white;
+            color: #0083b0;
+            border: 2px solid #0083b0;
+        }
+
+        .register-btn:hover {
+            background: #f0f9fc;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -697,6 +737,10 @@
             <div id="introduction-view">
                 <div class="intro-content">
                     <h2>欢迎使用 AI 文本助手</h2>
+                    <div class="auth-buttons-container">
+                        <button class="auth-button login-btn">登录</button>
+                        <button class="auth-button register-btn">注册</button>
+                    </div>
                     <div class="feature-section">
                         <h3>📝 文本处理</h3>
                         <ul>
