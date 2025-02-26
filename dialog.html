@@ -737,6 +737,47 @@
     font-size: 14px;
 }
 
+.message-container {
+    min-height: 20px;
+}
+
+.success-message {
+    color: #4CAF50;
+    font-size: 14px;
+    padding: 8px;
+    background-color: #E8F5E9;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: none;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 4px;
+    display: none;
+}
+
+/* 输入框错误状态样式 */
+.form-group input.error {
+    border-color: #ff4444;
+}
+
+/* 验证码按钮状态 */
+.send-code-btn {
+    position: relative;
+}
+
+.send-code-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 倒计时样式 */
+.send-code-btn.counting {
+    color: #666;
+}
 .login-submit-btn {
     width: 100%;
     padding: 12px;
@@ -748,7 +789,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-top: 16px;
 }
 
 .login-submit-btn:hover {
@@ -1001,11 +1041,6 @@
                                         <button class="send-code-btn">发送验证码</button>
                                     </div>
                                     <span class="error-message" id="code-error"></span>
-                                </div>
-                                <!-- 添加消息提示区域 -->
-                                <div class="message-container">
-                                    <div class="success-message" id="success-message"></div>
-                                    <div class="error-message" id="error-message"></div>
                                 </div>
                                 <button class="login-submit-btn">登录</button>
                                 <button id="back-to-intro" class="back-button" style="margin-top: 16px; width: 100%;">返回</button>

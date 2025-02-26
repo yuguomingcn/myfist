@@ -580,14 +580,28 @@ console.log('dialog.js loaded');
         const loginSubmitBtn = this.dialog.querySelector('.login-submit-btn');
         if (loginSubmitBtn) {
             loginSubmitBtn.addEventListener('click', () => {
+                this.clearErrors(); // 清除所有错误消息
+                
                 const email = this.dialog.querySelector('#email').value;
                 const code = this.dialog.querySelector('#verification-code').value;
                 
+                // 验证邮箱格式
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    this.showError('email-error', '请输入有效的邮箱地址');
+                    return;
+                }
+        
                 // 验证邮箱和验证码
                 if (email === 'yuguoming@yeah.net' && code === '666666') {
                     this.handleSuccessfulLogin(email);
                 } else {
-                    alert('邮箱或验证码错误！');
+                    if (email !== 'yuguoming@yeah.net') {
+                        this.showError('email-error', '邮箱地址不正确');
+                    }
+                    if (code !== '666666') {
+                        this.showError('code-error', '验证码不正确');
+                    }
                 }
             });
         }
@@ -595,12 +609,45 @@ console.log('dialog.js loaded');
         // 处理发送验证码按钮
         const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
         if (sendCodeBtn) {
+            let canSendCode = true;
+            let countdown = 60;
+            
             sendCodeBtn.addEventListener('click', () => {
+                if (!canSendCode) return;
+                
+                this.clearErrors();
                 const email = this.dialog.querySelector('#email').value;
+                
+                // 验证邮箱格式
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    this.showError('email-error', '请输入有效的邮箱地址');
+                    return;
+                }
+
                 if (email === 'yuguoming@yeah.net') {
-                    alert('验证码已发送！（测试验证码：666666）');
+                    // 显示成功消息
+                    this.showError('email-error', '验证码已发送，请查收（测试验证码：666666）');
+                    document.querySelector('#email-error').style.color = '#4CAF50'; // 使用绿色表示成功
+                    
+                    // 开始倒计时
+                    canSendCode = false;
+                    sendCodeBtn.disabled = true;
+                    
+                    const timer = setInterval(() => {
+                        countdown--;
+                        sendCodeBtn.textContent = `${countdown}秒后重试`;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(timer);
+                            sendCodeBtn.disabled = false;
+                            sendCodeBtn.textContent = '发送验证码';
+                            canSendCode = true;
+                            countdown = 60;
+                        }
+                    }, 1000);
                 } else {
-                    alert('请输入正确的邮箱地址！');
+                    this.showError('email-error', '该邮箱地址未注册');
                 }
             });
         }
@@ -612,8 +659,21 @@ console.log('dialog.js loaded');
                 this.handleLogout();
             });
         }
+        // 添加输入框获得焦点时清除错误信息的代码
+        const inputs = this.dialog.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                const errorElement = input.parentElement.querySelector('.error-message') || 
+                                input.parentElement.parentElement.querySelector('.error-message');
+                if (errorElement) {
+                    errorElement.textContent = '';
+                    errorElement.style.display = 'none';
+                }
+            });
+        });
 
     }
+    
 
     async handleSendMessage() {
         if (!this.isInitialized) {
@@ -712,6 +772,21 @@ console.log('dialog.js loaded');
             this.handleSuccessfulLogin(userEmail);
         }
     }
+    showError(elementId, message) {
+        const errorElement = this.dialog.querySelector(`#${elementId}`);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    }
+    
+    clearErrors() {
+        const errorElements = this.dialog.querySelectorAll('.error-message');
+        errorElements.forEach(element => {
+            element.textContent = '';
+            element.style.display = 'none';
+        });
+    }
 }
 // 将 ChatDialog 暴露到全局，但提供冲突处理
 window.ChatDialog = ChatDialog;
@@ -722,3 +797,4 @@ window.ChatDialog.noConflict = function() {
     return ChatDialog;
 };
 })();
+
