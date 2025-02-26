@@ -81,7 +81,14 @@
                 </div>
 
                 <!-- 在 dialog.html 中添加用户中心视图 -->
+                <!-- 修改用户中心视图部分 -->
                 <div id="user-center-view" style="display: none;">
+                    <!-- 添加返回按钮 -->
+                    <button class="back-icon-button" title="返回">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </button>
                     <div class="user-center-content">
                         <div class="user-info-section">
                             <div class="user-details">
@@ -102,8 +109,6 @@
                         </div>
                         
                         <div class="user-actions">
-                            <button id="upgrade-btn" class="action-btn">升级会员</button>
-                            <button id="settings-btn" class="action-btn">设置</button>
                             <button id="logout-btn" class="action-btn">退出登录</button>
                         </div>
                     </div>

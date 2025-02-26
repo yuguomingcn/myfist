@@ -574,6 +574,39 @@ console.log('dialog.js loaded');
             sendButton.addEventListener('click', () => this.handleSendMessage());
         }
 
+        // 添加用户中心返回按钮的事件监听
+        const userCenterBackBtn = this.dialog.querySelector('#user-center-view .back-icon-button');
+        if (userCenterBackBtn) {
+            userCenterBackBtn.addEventListener('click', () => {
+                // 隐藏用户中心视图
+                const userCenterView = this.dialog.querySelector('#user-center-view');
+                if (userCenterView) {
+                    userCenterView.style.display = 'none';
+                }
+                
+                // 显示介绍内容
+                const introContent = this.dialog.querySelector('#intro-content');
+                if (introContent) {
+                    introContent.style.display = 'block';
+                }
+                
+                // 显示整个介绍视图容器
+                const introView = this.dialog.querySelector('#introduction-view');
+                if (introView) {
+                    introView.style.display = 'block';
+                }
+
+                // 确保登录视图是隐藏的
+                const loginView = this.dialog.querySelector('#login-view');
+                if (loginView) {
+                    loginView.style.display = 'none';
+                }
+
+                // 标记为介绍视图状态
+                this.isIntroView = true;
+            });
+        }
+
         // 防止事件冒泡的代码保持不变
         this.dialog.addEventListener('mousedown', (e) => {
             e.stopPropagation();
