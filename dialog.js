@@ -524,24 +524,6 @@ console.log('dialog.js loaded');
                 // 这里添加 Google 登录逻辑
             });
         }
-    
-        // 监听邮箱登录按钮
-        const loginSubmitBtn = this.dialog.querySelector('.login-submit-btn');
-        if (loginSubmitBtn) {
-            loginSubmitBtn.addEventListener('click', () => {
-                console.log('Login submit button clicked');
-                // 这里添加邮箱登录逻辑
-            });
-        }
-    
-        // 监听发送验证码按钮
-        const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
-        if (sendCodeBtn) {
-            sendCodeBtn.addEventListener('click', () => {
-                console.log('Send code button clicked');
-                // 这里添加发送验证码逻辑
-            });
-        }
 
         const closeButton = this.dialog.querySelector('#close-chat');
         const clearButton = this.dialog.querySelector('#clear-messages');
@@ -594,6 +576,43 @@ console.log('dialog.js loaded');
         this.dialog.addEventListener('dragstart', (e) => {
             e.preventDefault();
         });
+
+        const loginSubmitBtn = this.dialog.querySelector('.login-submit-btn');
+        if (loginSubmitBtn) {
+            loginSubmitBtn.addEventListener('click', () => {
+                const email = this.dialog.querySelector('#email').value;
+                const code = this.dialog.querySelector('#verification-code').value;
+                
+                // 验证邮箱和验证码
+                if (email === 'yuguoming@yeah.net' && code === '666666') {
+                    this.handleSuccessfulLogin(email);
+                } else {
+                    alert('邮箱或验证码错误！');
+                }
+            });
+        }
+
+        // 处理发送验证码按钮
+        const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
+        if (sendCodeBtn) {
+            sendCodeBtn.addEventListener('click', () => {
+                const email = this.dialog.querySelector('#email').value;
+                if (email === 'yuguoming@yeah.net') {
+                    alert('验证码已发送！（测试验证码：666666）');
+                } else {
+                    alert('请输入正确的邮箱地址！');
+                }
+            });
+        }
+
+        // 处理退出登录按钮
+        const logoutBtn = this.dialog.querySelector('#logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                this.handleLogout();
+            });
+        }
+
     }
 
     async handleSendMessage() {
@@ -649,6 +668,48 @@ console.log('dialog.js loaded');
         } else {
             // 默认显示介绍视图
             this.switchToIntro();
+        }
+    }
+    handleSuccessfulLogin(email) {
+        // 隐藏登录视图
+        const loginView = this.dialog.querySelector('#login-view');
+        if (loginView) loginView.style.display = 'none';
+
+        // 显示用户中心视图
+        const userCenterView = this.dialog.querySelector('#user-center-view');
+        if (userCenterView) {
+            userCenterView.style.display = 'block';
+            // 更新用户信息
+            const userEmail = this.dialog.querySelector('#user-email');
+            if (userEmail) userEmail.textContent = email;
+        }
+
+        // 保存登录状态
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+    }
+
+    handleLogout() {
+        // 清除登录状态
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userEmail');
+
+        // 显示登录视图
+        const loginView = this.dialog.querySelector('#login-view');
+        if (loginView) loginView.style.display = 'block';
+
+        // 隐藏用户中心视图
+        const userCenterView = this.dialog.querySelector('#user-center-view');
+        if (userCenterView) userCenterView.style.display = 'none';
+    }
+
+    // 检查登录状态
+    checkLoginStatus() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const userEmail = localStorage.getItem('userEmail');
+
+        if (isLoggedIn && userEmail) {
+            this.handleSuccessfulLogin(userEmail);
         }
     }
 }
