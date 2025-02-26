@@ -627,7 +627,7 @@ console.log('dialog.js loaded');
 
                 if (email === 'yuguoming@yeah.net') {
                     // 显示成功消息
-                    this.showError('email-error', '验证码已发送，请查收（测试验证码：666666）');
+                    this.showError('email-error', '验证码已发送，请查收');
                     document.querySelector('#email-error').style.color = '#4CAF50'; // 使用绿色表示成功
                     
                     // 开始倒计时

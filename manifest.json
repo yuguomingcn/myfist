@@ -17,7 +17,7 @@
     {
       "matches": ["<all_urls>"],
       "css": [
-        "styles.css"
+        "styles.css","dialog.css"
       ],
       "js": ["dialog.js", "content.js","font-loader.js"]
     }
@@ -25,6 +25,7 @@
   "web_accessible_resources": [{
     "resources": [
       "dialog.html",
+      "dialog.css",
       "dialog.js",
       "fonts/webfonts/*"
     ],
