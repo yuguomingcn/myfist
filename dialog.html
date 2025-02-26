@@ -79,6 +79,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 在 dialog.html 中添加用户中心视图 -->
+                <div id="user-center-view" style="display: none;">
+                    <div class="user-center-content">
+                        <div class="user-info-section">
+                            <div class="user-details">
+                                <h3 id="user-email">yuguoming@yeah.net</h3>
+                                <span class="user-status">已登录</span>
+                            </div>
+                        </div>
+                        
+                        <div class="user-stats-section">
+                            <div class="stat-item">
+                                <h4>今日剩余次数</h4>
+                                <span id="remaining-count">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <h4>会员状态</h4>
+                                <span id="member-status">普通用户</span>
+                            </div>
+                        </div>
+                        
+                        <div class="user-actions">
+                            <button id="upgrade-btn" class="action-btn">升级会员</button>
+                            <button id="settings-btn" class="action-btn">设置</button>
+                            <button id="logout-btn" class="action-btn">退出登录</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
                 <div id="intro-content">
                     <div class="intro-content">
                         <h2>欢迎使用 AI 文本助手</h2>
@@ -164,41 +196,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 在 dialog.html 中添加用户中心视图 -->
-            <div id="user-center-view" style="display: none;">
-                <div class="user-center-content">
-                    <div class="user-info-section">
-                        <div class="user-avatar">
-                            <img src="assets/default-avatar.png" alt="用户头像" id="user-avatar">
-                        </div>
-                        <div class="user-details">
-                            <h3 id="user-email">yuguoming@yeah.net</h3>
-                            <span class="user-status">已登录</span>
-                        </div>
-                    </div>
-                    
-                    <div class="user-stats-section">
-                        <div class="stat-item">
-                            <h4>今日剩余次数</h4>
-                            <span id="remaining-count">50</span>
-                        </div>
-                        <div class="stat-item">
-                            <h4>会员状态</h4>
-                            <span id="member-status">普通用户</span>
-                        </div>
-                    </div>
-                    
-                    <div class="user-actions">
-                        <button id="upgrade-btn" class="action-btn">升级会员</button>
-                        <button id="settings-btn" class="action-btn">设置</button>
-                        <button id="logout-btn" class="action-btn">退出登录</button>
-                    </div>
-                </div>
-            </div>
-
-
-
 
         </div>
     </div>

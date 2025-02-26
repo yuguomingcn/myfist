@@ -184,16 +184,34 @@ console.log('dialog.js loaded');
         }
     }
 
+    // 添加控制聊天输入区域显示/隐藏的方法
+    toggleChatInput(show) {
+        const chatInput = this.dialog.querySelector('.chat-input');
+        if (chatInput) {
+            chatInput.style.display = show ? 'block' : 'none';
+        }
+    }
+    
+    // 修改 switchToIntro 方法
     switchToIntro() {
         console.log('Switching to intro view...');
         const introView = this.dialog.querySelector('#introduction-view');
         const chatView = this.dialog.querySelector('#chat-view');
+        const loginView = this.dialog.querySelector('#login-view');
+        const userCenterView = this.dialog.querySelector('#user-center-view');
         
         if (introView && chatView) {
             // 确保两个视图都有正确的显示状态
             introView.style.display = 'block';
             chatView.style.display = 'none';
             this.isIntroView = true;
+            
+            // 检查当前显示的是否是登录页面或用户中心
+            const isLoginViewVisible = loginView && loginView.style.display === 'block';
+            const isUserCenterVisible = userCenterView && userCenterView.style.display === 'block';
+            
+            // 根据当前页面决定是否显示聊天输入区域
+            this.toggleChatInput(!isLoginViewVisible && !isUserCenterVisible);
             
             // 重置聊天视图
             const messagesContainer = chatView.querySelector('#chat-messages');
@@ -207,11 +225,6 @@ console.log('dialog.js loaded');
                 input.value = '';
                 input.style.height = 'auto';
             }
-        } else {
-            console.error('Views not found:', {
-                introView: !!introView,
-                chatView: !!chatView
-            });
         }
     }
 
@@ -491,12 +504,9 @@ console.log('dialog.js loaded');
                 if (loginView && introContent) {
                     loginView.style.display = 'block';
                     introContent.style.display = 'none';
+                    // 隐藏聊天输入区域
+                    this.toggleChatInput(false);
                     console.log('Switched to login view');
-                } else {
-                    console.log('Login view or intro content not found:', {
-                        loginView: !!loginView,
-                        introContent: !!introContent
-                    });
                 }
             });
         }
@@ -743,6 +753,9 @@ console.log('dialog.js loaded');
             const userEmail = this.dialog.querySelector('#user-email');
             if (userEmail) userEmail.textContent = email;
         }
+
+        // 隐藏聊天输入区域
+        this.toggleChatInput(false);
 
         // 保存登录状态
         localStorage.setItem('isLoggedIn', 'true');
