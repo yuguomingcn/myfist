@@ -934,7 +934,7 @@ color: #666;
 }
 
 .stat-item span {
-font-size: 24px;
+font-size: 18px;
 font-weight: bold;
 color: #333;
 }
@@ -981,6 +981,7 @@ transition: background-color 0.3s;
     margin: 0 auto;
 }
 .settings-section {
+    text-align: left;
     margin-top: 24px;
     padding: 16px;
     background: #f8f9fa;
@@ -988,7 +989,7 @@ transition: background-color 0.3s;
 }
 
 .settings-section h2 {
-    font-size: 18px;
+    font-size: 16px;
     color: #333;
     margin-bottom: 16px;
 }
@@ -998,7 +999,7 @@ transition: background-color 0.3s;
 }
 
 .setting-group h3 {
-    font-size: 16px;
+    font-size: 14px;
     color: #666;
     margin-bottom: 12px;
 }
@@ -1010,6 +1011,7 @@ transition: background-color 0.3s;
 .setting-item label {
     display: block;
     font-size: 14px;
+    font-weight: bold;
     color: #333;
     margin-bottom: 8px;
 }
