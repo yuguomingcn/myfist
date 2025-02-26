@@ -32,6 +32,118 @@
                 </div>
             </div>
             
+            <!-- 在 dialog.html 中添加用户中心视图 -->
+            <!-- 修改用户中心视图部分 -->
+            <div id="user-center-view" style="display: none;">
+                <button class="back-icon-button" title="返回">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </button>
+
+                <div class="user-center-content">
+                    <!-- 用户信息部分 -->
+                    <div class="user-info-section">
+                        <div class="user-details">
+                            <h3 id="user-email">yuguoming@yeah.net</h3>
+                        </div>
+                    </div>
+                    
+                    <!-- 使用统计部分 -->
+                    <div class="user-stats-section">
+                        <div class="stat-item">
+                            <h4>今日剩余次数</h4>
+                            <span id="remaining-count">50</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>会员状态</h4>
+                            <span id="member-status">普通用户</span>
+                        </div>
+                    </div>
+
+                    <!-- 设置部分 -->
+                    <div class="settings-section">
+                        <h2>偏好设置</h2>
+                        
+                        <!-- 默认语言设置 -->
+                        <div class="setting-group">
+                            <h3>界面语言</h3>
+                            <select id="default-language" class="setting-select">
+                                <option value="zh_CN">简体中文</option>
+                                <option value="en">English</option>
+                                <option value="zh_TW">繁體中文</option>
+                                <option value="ja">日本語</option>
+                            </select>
+                        </div>
+
+                        <!-- 功能设置 -->
+                        <div class="setting-group">
+                            <h3>功能设置</h3>
+                            
+                            <!-- 翻译设置 -->
+                            <div class="setting-item">
+                                <label>翻译目标语言</label>
+                                <select id="translate-target" class="setting-select">
+                                    <option value="zh_CN">简体中文</option>
+                                    <option value="en">English</option>
+                                    <option value="ja">日本語</option>
+                                </select>
+                            </div>
+
+                            <!-- 改写设置 -->
+                            <div class="setting-item">
+                                <label>改写风格</label>
+                                <select id="rewrite-style" class="setting-select">
+                                    <option value="original">保持原文风格</option>
+                                    <option value="professional">更专业</option>
+                                    <option value="social">社交风格</option>
+                                </select>
+                            </div>
+
+                            <!-- 扩写设置 -->
+                            <div class="setting-item">
+                                <label>扩写比例</label>
+                                <select id="expand-ratio" class="setting-select">
+                                    <option value="20">20%</option>
+                                    <option value="50">50%</option>
+                                    <option value="100">100%</option>
+                                    <option value="200">200%</option>
+                                </select>
+                            </div>
+
+                            <!-- 缩写设置 -->
+                            <div class="setting-item">
+                                <label>缩写比例</label>
+                                <select id="shrink-ratio" class="setting-select">
+                                    <option value="20">20%</option>
+                                    <option value="50">50%</option>
+                                </select>
+                            </div>
+
+                            <!-- 语法检查设置 -->
+                            <div class="setting-item">
+                                <label>语法检查级别</label>
+                                <select id="grammar-check" class="setting-select">
+                                    <option value="normal">普通检查</option>
+                                    <option value="advanced">高级检查</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部链接和退出按钮 -->
+                    <div class="footer-section">
+                        <div class="footer-links">
+                            <a href="https://deephey.ai/about" target="_blank">关于我们</a>
+                            <a href="https://deephey.ai/billing" target="_blank">账单信息</a>
+                            <a href="https://deephey.ai/terms" target="_blank">用户协议</a>
+                            <a href="https://deephey.ai/privacy" target="_blank">隐私政策</a>
+                        </div>
+                        <button id="logout-btn" class="action-btn">退出登录</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 介绍页面 -->
             <!-- 修改 introduction-view 部分 -->
             <div id="introduction-view">
@@ -79,120 +191,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 在 dialog.html 中添加用户中心视图 -->
-                <!-- 修改用户中心视图部分 -->
-                <div id="user-center-view" style="display: none;">
-                    <button class="back-icon-button" title="返回">
-                        <svg viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                        </svg>
-                    </button>
-
-                    <div class="user-center-content">
-                        <!-- 用户信息部分 -->
-                        <div class="user-info-section">
-                            <div class="user-details">
-                                <h3 id="user-email">yuguoming@yeah.net</h3>
-                            </div>
-                        </div>
-                        
-                        <!-- 使用统计部分 -->
-                        <div class="user-stats-section">
-                            <div class="stat-item">
-                                <h4>今日剩余次数</h4>
-                                <span id="remaining-count">50</span>
-                            </div>
-                            <div class="stat-item">
-                                <h4>会员状态</h4>
-                                <span id="member-status">普通用户</span>
-                            </div>
-                        </div>
-
-                        <!-- 设置部分 -->
-                        <div class="settings-section">
-                            <h2>偏好设置</h2>
-                            
-                            <!-- 默认语言设置 -->
-                            <div class="setting-group">
-                                <h3>界面语言</h3>
-                                <select id="default-language" class="setting-select">
-                                    <option value="zh_CN">简体中文</option>
-                                    <option value="en">English</option>
-                                    <option value="zh_TW">繁體中文</option>
-                                    <option value="ja">日本語</option>
-                                </select>
-                            </div>
-
-                            <!-- 功能设置 -->
-                            <div class="setting-group">
-                                <h3>功能设置</h3>
-                                
-                                <!-- 翻译设置 -->
-                                <div class="setting-item">
-                                    <label>翻译目标语言</label>
-                                    <select id="translate-target" class="setting-select">
-                                        <option value="zh_CN">简体中文</option>
-                                        <option value="en">English</option>
-                                        <option value="ja">日本語</option>
-                                    </select>
-                                </div>
-
-                                <!-- 改写设置 -->
-                                <div class="setting-item">
-                                    <label>改写风格</label>
-                                    <select id="rewrite-style" class="setting-select">
-                                        <option value="original">保持原文风格</option>
-                                        <option value="professional">更专业</option>
-                                        <option value="social">社交风格</option>
-                                    </select>
-                                </div>
-
-                                <!-- 扩写设置 -->
-                                <div class="setting-item">
-                                    <label>扩写比例</label>
-                                    <select id="expand-ratio" class="setting-select">
-                                        <option value="20">20%</option>
-                                        <option value="50">50%</option>
-                                        <option value="100">100%</option>
-                                        <option value="200">200%</option>
-                                    </select>
-                                </div>
-
-                                <!-- 缩写设置 -->
-                                <div class="setting-item">
-                                    <label>缩写比例</label>
-                                    <select id="shrink-ratio" class="setting-select">
-                                        <option value="20">20%</option>
-                                        <option value="50">50%</option>
-                                    </select>
-                                </div>
-
-                                <!-- 语法检查设置 -->
-                                <div class="setting-item">
-                                    <label>语法检查级别</label>
-                                    <select id="grammar-check" class="setting-select">
-                                        <option value="normal">普通检查</option>
-                                        <option value="advanced">高级检查</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 底部链接和退出按钮 -->
-                        <div class="footer-section">
-                            <div class="footer-links">
-                                <a href="https://deephey.ai/about" target="_blank">关于我们</a>
-                                <a href="https://deephey.ai/billing" target="_blank">账单信息</a>
-                                <a href="https://deephey.ai/terms" target="_blank">用户协议</a>
-                                <a href="https://deephey.ai/privacy" target="_blank">隐私政策</a>
-                            </div>
-                            <button id="logout-btn" class="action-btn">退出登录</button>
-                        </div>
-                    </div>
-                </div>
-
-
 
                 <div id="intro-content">
                     <div class="intro-content">
