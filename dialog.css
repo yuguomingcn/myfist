@@ -886,8 +886,9 @@ background: #e8e8e8;
 
 /* 添加用户中心样式 */
 #user-center-view {
-padding: 20px;
-background: #fff;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
 }
 #user-center-view:not([style*="display: none"]) ~ .chat-input {
     display: none !important;
@@ -896,7 +897,6 @@ background: #fff;
 .user-info-section {
 display: flex;
 align-items: center;
-margin-bottom: 24px;
 }
 
 .user-details h3 {
@@ -951,15 +951,9 @@ cursor: pointer;
 transition: background-color 0.3s;
 }
 
-#logout-btn {
-background-color: #ff4444;
-color: white;
-}
 /* 添加返回按钮样式 */
 .back-icon-button {
     position: absolute;
-    top: 16px;
-    left: 16px;
     background: none;
     border: none;
     color: #666;
@@ -979,5 +973,105 @@ color: white;
 }
 /* 调整用户中心内容的上边距，为返回按钮留出空间 */
 .user-center-content {
-    padding-top: 15px;
+    padding-top: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.settings-section {
+    margin-top: 24px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.settings-section h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.setting-group {
+    margin-bottom: 24px;
+}
+
+.setting-group h3 {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.setting-item {
+    margin-bottom: 16px;
+}
+
+.setting-item label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.setting-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.setting-select:hover {
+    border-color: #0083b0;
+}
+
+.setting-select:focus {
+    outline: none;
+    border-color: #0083b0;
+    box-shadow: 0 0 0 2px rgba(0, 131, 176, 0.1);
+}
+
+/* 底部链接样式 */
+.footer-section {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.footer-links a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #0083b0;
+}
+
+/* 登出按钮样式更新 */
+#logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#logout-btn:hover {
+    background: #ff2020;
 }

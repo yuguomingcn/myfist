@@ -461,6 +461,47 @@ console.log('dialog.js loaded');
             }
         }
     }
+    // 初始化设置
+    initializeSettings() {
+        // 从本地存储加载设置
+        const settings = this.loadSettings();
+        
+        // 设置默认值
+        Object.keys(settings).forEach(settingId => {
+            const element = this.dialog.querySelector(`#${settingId}`);
+            if (element) {
+                element.value = settings[settingId];
+                
+                // 添加change事件监听
+                element.addEventListener('change', () => {
+                    this.saveSetting(settingId, element.value);
+                });
+            }
+        });
+    }
+
+    // 加载设置
+    loadSettings() {
+        const defaultSettings = {
+            'default-language': 'zh_CN',
+            'translate-target': 'zh_CN',
+            'rewrite-style': 'original',
+            'expand-ratio': '20',
+            'shrink-ratio': '20',
+            'grammar-check': 'normal'
+        };
+
+        const savedSettings = localStorage.getItem('user-settings');
+        return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+    }
+
+    // 保存单个设置
+    saveSetting(settingId, value) {
+        const settings = this.loadSettings();
+        settings[settingId] = value;
+        localStorage.setItem('user-settings', JSON.stringify(settings));
+        console.log(`Saved setting: ${settingId} = ${value}`);
+    }
 
     // 修改 initializeEventListeners 方法，添加清空按钮的事件监听
     initializeEventListeners() {
@@ -793,6 +834,8 @@ console.log('dialog.js loaded');
         // 保存登录状态
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
+        
+        this.initializeSettings();
     }
 
     handleLogout() {
