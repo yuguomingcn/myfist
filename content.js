@@ -6,7 +6,7 @@
 // 在文件顶部，修改 chatDialog 的声明
 let chatDialog = null;
 let isDialogInitializing = false;
-
+let isSelecting = false;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "toggleDialog") {
@@ -334,14 +334,20 @@ function showResultPopup(result, title = '结果', originalText, buttonContainer
 }
 
 // 监听文档点击事件 - 同时处理弹窗和功能按钮的隐藏
-document.addEventListener('mousedown', (event) => {
+// 监听选择开始事件
+document.addEventListener('mousedown', (e) => {
+    const selection = window.getSelection();
+    if (selection) {
+        selection.removeAllRanges(); // 清除之前的选择
+    }
+    isSelecting = true;
+    
+    // 如果点击位置不在菜单内，直接隐藏菜单
     const popup = document.getElementById('result-popup');
     const container = document.getElementById('action-buttons-container');
     
-    // 如果点击位置不在弹窗或功能按钮区域内
-    if (!event.target.closest('#result-popup') && 
-        !event.target.closest('#action-buttons-container')) {
-        // 同时隐藏弹窗和功能按钮
+    if (!e.target.closest('#result-popup') && 
+        !e.target.closest('#action-buttons-container')) {
         if (popup) popup.remove();
         if (container) container.style.display = 'none';
     }
@@ -349,21 +355,23 @@ document.addEventListener('mousedown', (event) => {
 
 // 监听选择文本事件
 document.addEventListener('mouseup', (e) => {
+    if (!isSelecting) {
+        return; // 如果不是从选择状态释放的，直接返回
+    }
+    
     const selection = window.getSelection();
     const selectedText = selection ? selection.toString().trim() : '';
     
     if (selectedText) {
         showActionButtons(selectedText, e);
     }
+    
+    isSelecting = false; // 重置选择状态
 });
 
-// 阻止右键菜单
-document.addEventListener('contextmenu', (e) => {
-    const selection = window.getSelection();
-    const selectedText = selection ? selection.toString().trim() : '';
-    if (selectedText) {
-        e.preventDefault();
-    }
+// 当用户移动鼠标离开页面时，重置选择状态
+document.addEventListener('mouseleave', () => {
+    isSelecting = false;
 });
 
 // 监听来自扩展图标的消息
