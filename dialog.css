@@ -895,14 +895,16 @@ background: #e8e8e8;
 }
 
 .user-info-section {
-display: flex;
-align-items: center;
+    display: flex;
+    justify-content: center;  /* 改为居中对齐 */
+    margin-bottom: 10px;     /* 增加与下方内容的间距 */
 }
 
 .user-details h3 {
-margin: 0 0 8px 0;
-font-size: 18px;
-color: #333;
+    text-align: center;      /* 文本居中 */
+    margin: 0;
+    font-size: 18px;
+    color: #333;
 }
 
 .user-status {
@@ -979,7 +981,7 @@ transition: background-color 0.3s;
 }
 .settings-section {
     margin-top: 24px;
-    padding: 16px;
+    padding: 16px 0px;
     background: #f8f9fa;
     border-radius: 12px;
 }
