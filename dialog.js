@@ -162,12 +162,19 @@ console.log('dialog.js loaded');
         console.log('Switching to chat view...');
         const introView = this.dialog.querySelector('#introduction-view');
         const chatView = this.dialog.querySelector('#chat-view');
-        
-        if (introView && chatView) {
-            // 确保两个视图都有正确的显示状态
+        const userCenterView = this.dialog.querySelector('#user-center-view'); // 添加用户中心视图
+    
+        if (introView && chatView && userCenterView) { // 确保所有元素都存在
+            // 隐藏其他所有视图
             introView.style.display = 'none';
+            userCenterView.style.display = 'none'; // 隐藏用户中心视图
+    
+            // 显示聊天视图
             chatView.style.display = 'flex';
             this.isIntroView = false;
+    
+            // 确保聊天输入区域可见
+            this.toggleChatInput(true);
             
             // 确保聊天视图中的元素可见
             const messagesContainer = chatView.querySelector('#chat-messages');
@@ -179,7 +186,8 @@ console.log('dialog.js loaded');
         } else {
             console.error('Views not found:', {
                 introView: !!introView,
-                chatView: !!chatView
+                chatView: !!chatView,
+                userCenterView: !!userCenterView
             });
         }
     }
@@ -562,6 +570,8 @@ console.log('dialog.js loaded');
                 if (loginView && introContent) {
                     loginView.style.display = 'none';
                     introContent.style.display = 'block';
+                    // 显示聊天输入区域
+                    this.toggleChatInput(true); // 添加这一行
                     console.log('Switched back to intro view');
                 }
             });
@@ -642,6 +652,8 @@ console.log('dialog.js loaded');
                 if (loginView) {
                     loginView.style.display = 'none';
                 }
+                // 显示聊天输入区域
+                this.toggleChatInput(true); // 添加这一行
 
                 // 标记为介绍视图状态
                 this.isIntroView = true;

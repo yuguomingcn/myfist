@@ -103,6 +103,24 @@ function showActionButtons(selectedText, mouseEvent) {
         event.stopPropagation();
         event.preventDefault();
     });
+    // 继续询问按钮功能
+    const continueButton = popup.querySelector('.continue-button');
+    if (continueButton) {
+        continueButton.onclick = function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            
+            if (chatDialog && chatDialog.isInitialized) {
+                // 切换到聊天视图并显示输入区域
+                chatDialog.switchToChat();
+                chatDialog.toggleChatInput(true);
+                
+                // 可以在这里添加选中的文本到对话中
+                chatDialog.addMessage(selectedText, 'user');
+                chatDialog.addMessage('您想对这段文字做什么？', 'ai');
+            }
+        };
+    }
 }
 
 // 处理不同的动作
