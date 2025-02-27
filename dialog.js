@@ -17,6 +17,12 @@ console.log('dialog.js loaded');
             this.isTransitioning = false; // 添加过渡状态标记
         }
 
+        // 添加一个方法来检查来源视图
+        isFromUserCenter() {
+            const userCenterView = this.dialog.querySelector('#user-center-view');
+            return userCenterView && userCenterView.dataset.wasActive === 'true';
+        }
+
     async create() {
         console.log('Creating dialog...');
         if (this.dialog) {
@@ -171,7 +177,11 @@ show(selectedText = '') {
         const introView = this.dialog.querySelector('#introduction-view');
         const chatView = this.dialog.querySelector('#chat-view');
         const userCenterView = this.dialog.querySelector('#user-center-view'); // 添加用户中心视图
-    
+        
+        if (userCenterView && userCenterView.style.display === 'block') {
+            userCenterView.dataset.wasActive = 'true';
+        }
+
         if (introView && chatView && userCenterView) { // 确保所有元素都存在
             // 隐藏其他所有视图
             introView.style.display = 'none';
@@ -467,15 +477,36 @@ show(selectedText = '') {
     async clearMessages() {
         const messagesContainer = this.dialog.querySelector('#chat-messages');
         if (messagesContainer) {
-            // 使用自定义确认对话框
             const confirmed = await this.showConfirmDialog();
             if (confirmed) {
                 // 清空消息容器
                 messagesContainer.innerHTML = '';
-                // 切换到介绍页面
-                this.switchToIntro();
-                // 显示聊天输入区域（因为此时不在登录页面或用户中心）
-                this.toggleChatInput(true);
+
+                // 检查是否来自用户中心
+                if (this.isFromUserCenter()) {
+                    // 恢复到用户中心状态
+                    const userCenterView = this.dialog.querySelector('#user-center-view');
+                    const introView = this.dialog.querySelector('#introduction-view');
+                    const chatView = this.dialog.querySelector('#chat-view');
+                    
+                    if (userCenterView && introView && chatView) {
+                        // 重置标记
+                        userCenterView.dataset.wasActive = 'false';
+                        
+                        // 显示用户中心
+                        userCenterView.style.display = 'block';
+                        introView.style.display = 'block';
+                        chatView.style.display = 'none';
+                        
+                        // 隐藏聊天输入
+                        this.toggleChatInput(false);
+                        this.isIntroView = true;
+                    }
+                } else {
+                    // 原有的切换到介绍页面的逻辑
+                    this.switchToIntro();
+                    this.toggleChatInput(true);
+                }
             }
         }
     }
