@@ -150,7 +150,7 @@
                 <!-- 登录视图 -->
                 <div id="login-view" style="display: none;">
                     <div class="intro-content">
-                        <h2>登录 DEEPHEY.AI</h2>
+                        <h2 id="auth-title">登录 DEEPHEY.AI</h2>
                         <div class="login-content" style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
                             <!-- Google登录按钮 -->
                             <button class="google-login-btn">
@@ -165,14 +165,14 @@
                                     <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571
                                 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
                                 </svg>
-                                <span>使用 Google 账号登录</span>
+                                <span id="google-btn-text">使用 Google 账号登录</span>
                             </button>
                             <div class="login-divider">
                                 <span>或</span>
                             </div>
                             <!-- 邮箱登录表单 -->
                             <!-- 修改email-login-form部分 -->
-                            <div class="email-login-form">
+                            <div id="login-form" class="email-login-form">
                                 <div class="form-group">
                                     <label for="email">账户登录</label>
                                     <input type="email" id="email" placeholder="请输入邮箱地址">
@@ -181,12 +181,12 @@
                                 
                                 <!-- 添加登录方式切换 -->
                                 <div class="login-type-switch">
-                                    <button class="switch-btn active" data-type="code">验证码登录</button>
-                                    <button class="switch-btn" data-type="password">密码登录</button>
+                                    <button class="switch-btn active" data-type="password">密码登录</button>
+                                    <button class="switch-btn" data-type="code">验证码登录</button>
                                 </div>
                                 
                                 <!-- 验证码登录部分 -->
-                                <div class="form-group verification-code" id="code-login-section">
+                                <div class="form-group verification-code" id="code-login-section" style="display: none;">
                                     <div class="verification-code-container">
                                         <input type="text" id="verification-code" placeholder="请输入验证码">
                                         <button class="send-code-btn">发送验证码</button>
@@ -195,7 +195,7 @@
                                 </div>
                                 
                                 <!-- 密码登录部分 -->
-                                <div class="form-group" id="password-login-section" style="display: none;">
+                                <div class="form-group" id="password-login-section">
                                     <div class="password-input-group">
                                         <input type="password" id="password" placeholder="请输入密码">
                                         <button type="button" class="toggle-password-btn">
@@ -209,16 +209,67 @@
                                 <button class="login-submit-btn">登录</button>
                                 <button id="back-to-intro" class="back-button" style="margin-top: 16px; width: 100%;">返回</button>
                             </div>
+
+                            <!-- 注册表单 -->
+                            <div id="register-form" class="auth-form" style="display: none;">
+                                <div class="form-group">
+                                    <label for="register-email">邮箱地址</label>
+                                    <input type="email" id="register-email" placeholder="请输入邮箱地址">
+                                    <span class="error-message" id="register-email-error"></span>
+                                </div>
+                
+                                <div class="form-group">
+                                    <label for="register-password">设置密码</label>
+                                    <div class="password-input-group">
+                                        <input type="password" id="register-password" placeholder="密码长度至少6位">
+                                        <button type="button" class="toggle-password-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <span class="error-message" id="register-password-error"></span>
+                                </div>
+                
+                                <div class="form-group">
+                                    <label for="register-confirm-password">确认密码</label>
+                                    <div class="password-input-group">
+                                        <input type="password" id="register-confirm-password" placeholder="请再次输入密码">
+                                        <button type="button" class="toggle-password-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <span class="error-message" id="register-confirm-error"></span>
+                                </div>
+                
+                                <div class="form-group verification-code">
+                                    <div class="verification-code-container">
+                                        <input type="text" id="register-verification-code" placeholder="请输入验证码">
+                                        <button class="send-code-btn" id="register-send-code">发送验证码</button>
+                                    </div>
+                                    <span class="error-message" id="register-code-error"></span>
+                                </div>
+                
+                                <button class="auth-button register-btn" style="background: #0083b0; color: white; border: none;">注册</button>
+                            </div>
+                
+                            <div class="auth-switch">
+                                <button id="switch-to-register" class="switch-auth-btn">没有账号？立即注册</button>
+                                <button id="switch-to-login" class="switch-auth-btn" style="display: none;">已有账号？立即登录</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
+
+
+
 
                 <div id="intro-content">
                     <div class="intro-content">
                         <h2>欢迎使用 AI 文本助手</h2>
                         <div class="auth-buttons-container">
                             <button id="loginButton" class="auth-button login-btn">登录</button>
-                            <button class="auth-button register-btn">注册</button>
+                            <button id="registerButton" class="auth-button register-btn">注册</button>
                         </div>
                         <div class="feature-section">
                             <h3>📝 文本处理</h3>

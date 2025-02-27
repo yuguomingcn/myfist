@@ -833,6 +833,83 @@ show(selectedText = '') {
             });
         }
 
+        // 处理介绍页面的注册按钮点击
+        const introRegisterBtn = this.dialog.querySelector('#registerButton');
+        if (introRegisterBtn) {
+            introRegisterBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const loginView = this.dialog.querySelector('#login-view');
+                const introContent = this.dialog.querySelector('#intro-content');
+                const loginForm = this.dialog.querySelector('#login-form');
+                const registerForm = this.dialog.querySelector('#register-form');
+                const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
+                const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
+
+                if (loginView && introContent && loginForm && registerForm) {
+                    // 显示登录视图容器，隐藏介绍内容
+                    loginView.style.display = 'block';
+                    introContent.style.display = 'none';
+
+                    // 显示注册表单，隐藏登录表单
+                    loginForm.style.display = 'none';
+                    registerForm.style.display = 'block';
+                    switchToLoginBtn.style.display = 'block';
+                    switchToRegisterBtn.style.display = 'none';
+
+                    // 更新标题和 Google 按钮文本
+                    this.dialog.querySelector('#auth-title').textContent = '注册 DEEPHEY.AI';
+                    this.dialog.querySelector('#google-btn-text').textContent = '使用 Google 账号注册';
+
+                    // 隐藏聊天输入区域
+                    this.toggleChatInput(false);
+                }
+            });
+        }
+
+        // 处理注册表单密码显示/隐藏
+        const registerPasswordToggles = this.dialog.querySelectorAll('#register-form .toggle-password-btn');
+        registerPasswordToggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                const input = e.target.closest('.password-input-group').querySelector('input');
+                const type = input.type === 'password' ? 'text' : 'password';
+                input.type = type;
+                toggle.innerHTML = type === 'password' ? 
+                    '<i class="fas fa-eye"></i>' : 
+                    '<i class="fas fa-eye-slash"></i>';
+            });
+        });
+
+        // 处理注册发送验证码
+        const registerSendCodeBtn = this.dialog.querySelector('#register-send-code');
+        if (registerSendCodeBtn) {
+            this.initializeVerificationCode(registerSendCodeBtn, 'register-email', 'register-email-error');
+        }
+
+        // 处理注册表单提交
+        const registerSubmitBtn = this.dialog.querySelector('#register-form .register-btn');
+        if (registerSubmitBtn) {
+            registerSubmitBtn.addEventListener('click', () => {
+                this.handleRegisterSubmit();
+            });
+        }
+
+
+
+        // 处理登录/注册切换
+        const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
+        const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
+        if (switchToRegisterBtn && switchToLoginBtn) {
+            switchToRegisterBtn.addEventListener('click', () => {
+                this.switchToRegisterForm();
+            });
+
+            switchToLoginBtn.addEventListener('click', () => {
+                this.switchToLoginForm();
+            });
+        }
+
         // 处理发送验证码按钮
         const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
         if (sendCodeBtn) {
@@ -901,6 +978,143 @@ show(selectedText = '') {
 
     }
     
+    switchToRegisterForm() {
+        const loginForm = this.dialog.querySelector('#login-form');
+        const registerForm = this.dialog.querySelector('#register-form');
+        const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
+        const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
+    
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        switchToLoginBtn.style.display = 'block';
+        switchToRegisterBtn.style.display = 'none';
+    
+        // 更新标题和 Google 按钮文本
+        this.dialog.querySelector('#auth-title').textContent = '注册 DEEPHEY.AI';
+        this.dialog.querySelector('#google-btn-text').textContent = '使用 Google 账号注册';
+    
+        // 清除错误信息
+        this.clearErrors();
+    }
+    switchToLoginForm() {
+        const loginForm = this.dialog.querySelector('#login-form');
+        const registerForm = this.dialog.querySelector('#register-form');
+        const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
+        const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
+    
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        switchToLoginBtn.style.display = 'none';
+        switchToRegisterBtn.style.display = 'block';
+    
+        // 更新标题和 Google 按钮文本
+        this.dialog.querySelector('#auth-title').textContent = '登录 DEEPHEY.AI';
+        this.dialog.querySelector('#google-btn-text').textContent = '使用 Google 账号登录';
+    
+        // 清除错误信息
+        this.clearErrors();
+    }
+    initializeVerificationCode(button, emailInputId, errorElementId) {
+        let canSendCode = true;
+        let countdown = 60;
+    
+        button.addEventListener('click', () => {
+            if (!canSendCode) return;
+    
+            const email = this.dialog.querySelector(`#${emailInputId}`).value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+            if (!emailRegex.test(email)) {
+                this.showError(errorElementId, '请输入有效的邮箱地址');
+                return;
+            }
+    
+            // 这里应该调用后端 API 发送验证码
+            this.showError(errorElementId, '验证码已发送，请查收');
+            const errorElement = this.dialog.querySelector(`#${errorElementId}`);
+            if (errorElement) {
+                errorElement.style.color = '#4CAF50';
+                errorElement.style.display = 'block';
+            }
+    
+            // 开始倒计时
+            canSendCode = false;
+            button.disabled = true;
+            
+            const timer = setInterval(() => {
+                countdown--;
+                button.textContent = `${countdown}秒后重试`;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    button.disabled = false;
+                    button.textContent = '发送验证码';
+                    canSendCode = true;
+                    countdown = 60;
+                }
+            }, 1000);
+        });
+    }
+    
+    handleRegisterSubmit() {
+        this.clearErrors();
+    
+        const email = this.dialog.querySelector('#register-email').value;
+        const password = this.dialog.querySelector('#register-password').value;
+        const confirmPassword = this.dialog.querySelector('#register-confirm-password').value;
+        const verificationCode = this.dialog.querySelector('#register-verification-code').value;
+    
+        // 验证邮箱
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            this.showError('register-email-error', '请输入有效的邮箱地址');
+            return;
+        }
+    
+        // 验证密码
+        if (password.length < 6) {
+            this.showError('register-password-error', '密码长度不能少于6位');
+            return;
+        }
+        // 验证密码格式：只允许英文、数字和特殊符号
+        const passwordRegex = /^[A-Za-z0-9\`\~\!\@\#\$\%\^\&\*\(\)\_\+\-\=\[\]\{\}\|\\\;\:\"\'\,\.\<\>\/\?]+$/;
+        if (!passwordRegex.test(password)) {
+            this.showError('register-password-error', '密码只能包含英文、数字和特殊符号');
+            return;
+        }
+    
+        // 验证确认密码
+        if (password !== confirmPassword) {
+            this.showError('register-confirm-error', '两次输入的密码不一致');
+            return;
+        }
+    
+        // 验证验证码
+        if (!verificationCode) {
+            this.showError('register-code-error', '请输入验证码');
+            return;
+        }
+    
+        // 这里应该调用后端 API 进行注册
+        // 模拟注册成功
+        setTimeout(() => {
+            this.showError('register-email-error', '注册成功！');
+            const errorElement = this.dialog.querySelector('#register-email-error');
+            if (errorElement) {
+                errorElement.style.color = '#4CAF50';
+            }
+    
+            // 延时后切换到登录表单
+            setTimeout(() => {
+                this.switchToLoginForm();
+                // 自动填充邮箱
+                const loginEmailInput = this.dialog.querySelector('#login-email');
+                if (loginEmailInput) {
+                    loginEmailInput.value = email;
+                }
+            }, 1500);
+        }, 1000);
+    }
 
     async handleSendMessage() {
         if (!this.isInitialized) {

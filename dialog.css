@@ -1150,6 +1150,25 @@ transition: background-color 0.3s;
     text-decoration: none;
 }
 
-.forgot-password-link:hover {
+.auth-switch {
+    margin-top: 16px;
+    text-align: center;  /* 已有这个属性 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 可以顺便优化一下按钮的样式 */
+.switch-auth-btn {
+    background: none;
+    border: none;
+    color: #0083b0;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    margin: 0 auto; /* 添加这个确保按钮本身也居中 */
+}
+
+.switch-auth-btn:hover {
     text-decoration: underline;
 }
