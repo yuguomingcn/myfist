@@ -72,57 +72,65 @@ console.log('dialog.js loaded');
         }
     }
 
-    show(selectedText = '') {
-        console.log('Show called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
-        
-        if (this.isTransitioning) {
-            console.log('Show canceled - dialog is transitioning');
-            return;
-        }
+    // 修改 show() 方法，检查对话内容决定显示哪个视图
+show(selectedText = '') {
+    console.log('Show called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
     
-        // 如果对话框已经显示，并且有新的选中文本，直接切换到聊天视图并添加消息
-        if (this.isVisible && selectedText) {
+    if (this.isTransitioning) {
+        console.log('Show canceled - dialog is transitioning');
+        return;
+    }
+
+    // 如果对话框已经显示，并且有新的选中文本，直接切换到聊天视图并添加消息
+    if (this.isVisible && selectedText) {
+        this.switchToChat();
+        this.addMessage(selectedText, 'user');
+        this.addMessage('您想对这段文字做什么？', 'ai');
+        return;
+    }
+
+    // 如果对话框已经显示但没有新的选中文本，不做任何操作
+    if (this.isVisible) {
+        console.log('Dialog already visible');
+        return;
+    }
+
+    this.isTransitioning = true;
+    this.dialog.style.display = 'block';
+    
+    // 强制重排
+    this.dialog.offsetHeight;
+    
+    requestAnimationFrame(() => {
+        this.dialog.style.right = '0';
+        this.isVisible = true;
+        
+        // 检查是否有对话内容
+        const messagesContainer = this.dialog.querySelector('#chat-messages');
+        const hasMessages = messagesContainer && messagesContainer.children.length > 0;
+        
+        if (selectedText) {
+            // 如果有选中文本，切换到聊天视图
             this.switchToChat();
             this.addMessage(selectedText, 'user');
             this.addMessage('您想对这段文字做什么？', 'ai');
-            return;
+        } else if (hasMessages) {
+            // 如果有对话内容，切换到聊天视图
+            this.switchToChat();
+        } else {
+            // 如果没有任何内容，显示介绍页面
+            this.switchToIntro();
         }
-    
-        // 如果对话框已经显示但没有新的选中文本，不做任何操作
-        if (this.isVisible) {
-            console.log('Dialog already visible');
-            return;
-        }
-    
-        this.isTransitioning = true;
-        this.dialog.style.display = 'block';
-        
-        // 强制重排
-        this.dialog.offsetHeight;
-        
-        requestAnimationFrame(() => {
-            this.dialog.style.right = '0';
-            this.isVisible = true;
-            
-            if (selectedText) {
-                this.switchToChat();
-                this.addMessage(selectedText, 'user');
-                this.addMessage('您想对这段文字做什么？', 'ai');
-            } else if (!this.isIntroView) {
-                this.switchToChat();
-            } else {
-                this.switchToIntro();
-            }
-        });
-    
-        // 监听过渡结束
-        const handleTransitionEnd = () => {
-            this.isTransitioning = false;
-            this.dialog.removeEventListener('transitionend', handleTransitionEnd);
-            console.log('Show transition completed');
-        };
-        this.dialog.addEventListener('transitionend', handleTransitionEnd);
-    }
+    });
+
+    // 监听过渡结束
+    const handleTransitionEnd = () => {
+        this.isTransitioning = false;
+        this.dialog.removeEventListener('transitionend', handleTransitionEnd);
+        console.log('Show transition completed');
+    };
+    this.dialog.addEventListener('transitionend', handleTransitionEnd);
+}
 
     // 在 ChatDialog 类中添加这个方法，建议放在 switchToIntro 方法前（大约第94行）：
     showIntroduction() {
@@ -243,20 +251,20 @@ console.log('dialog.js loaded');
             console.log('Hide canceled - dialog is transitioning or already hidden');
             return;
         }
-
+    
         this.isTransitioning = true;
         this.dialog.style.right = '-350px';
         
-        // 监听过渡结束
         const handleTransitionEnd = () => {
             this.isVisible = false;
             this.isTransitioning = false;
-            this.switchToIntro();
+            // 移除 this.switchToIntro() 调用，保持当前视图状态
             this.dialog.removeEventListener('transitionend', handleTransitionEnd);
             console.log('Hide transition completed');
         };
         this.dialog.addEventListener('transitionend', handleTransitionEnd);
     }
+    
 
     async toggle(selectedText = '') {
         console.log('Toggle called', { isVisible: this.isVisible, isTransitioning: this.isTransitioning });
@@ -455,7 +463,7 @@ console.log('dialog.js loaded');
         });
     }
 
-    // 添加清空消息的方法
+    // 修改 clearMessages 方法
     async clearMessages() {
         const messagesContainer = this.dialog.querySelector('#chat-messages');
         if (messagesContainer) {
@@ -466,6 +474,8 @@ console.log('dialog.js loaded');
                 messagesContainer.innerHTML = '';
                 // 切换到介绍页面
                 this.switchToIntro();
+                // 显示聊天输入区域（因为此时不在登录页面或用户中心）
+                this.toggleChatInput(true);
             }
         }
     }
@@ -624,6 +634,20 @@ console.log('dialog.js loaded');
         if (sendButton && input) {
             sendButton.addEventListener('click', () => this.handleSendMessage());
         }
+
+        // 添加对话框点击事件，用于隐藏浮动功能按钮
+        this.dialog.addEventListener('click', () => {
+            // 通过ID查找功能按钮容器和结果弹窗并隐藏
+            const actionButtons = document.getElementById('action-buttons-container');
+            const resultPopup = document.getElementById('result-popup');
+            
+            if (actionButtons) {
+                actionButtons.style.display = 'none';
+            }
+            if (resultPopup) {
+                resultPopup.remove();
+            }
+        });
 
         // 添加用户中心返回按钮的事件监听
         const userCenterBackBtn = this.dialog.querySelector('#user-center-view .back-icon-button');

@@ -131,9 +131,19 @@ async function handleAction(action, text, buttonContainer) {
 
     switch (action) {
         case 'ask':
+            // 隐藏按钮容器
+            if (buttonContainer) {
+                buttonContainer.style.display = 'none';
+            }
+            // 移除任何现有的结果弹窗
+            const existingPopup = document.getElementById('result-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+            
             if (!chatDialog) {
                 chatDialog = new ChatDialog();
-                await chatDialog.create();  // 等待创建完成
+                await chatDialog.create();
             }
             chatDialog.show(text);
             return;
