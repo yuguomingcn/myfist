@@ -72,10 +72,13 @@
 
 /* 弹窗内容区域样式 */
 .popup-content {
-    padding: 15px;
     height: 120px;
-    background-color: #f0f8ff;
-    border: 2px solid #1e90ff;
+    background-color: rgb(240, 248, 255);
+    padding: 15px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(30, 144, 255);
+    border-image: initial;
     margin: 10px;
     border-radius: 4px;
 }
