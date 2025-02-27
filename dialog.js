@@ -727,14 +727,68 @@ show(selectedText = '') {
         this.dialog.addEventListener('dragstart', (e) => {
             e.preventDefault();
         });
+        
 
+        // 登录方式切换
+        const switchBtns = this.dialog.querySelectorAll('.switch-btn');
+        const codeSection = this.dialog.querySelector('#code-login-section');
+        const passwordSection = this.dialog.querySelector('#password-login-section');
+
+        switchBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 更新按钮状态
+                switchBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // 切换登录表单
+                if (btn.dataset.type === 'password') {
+                    codeSection.style.display = 'none';
+                    passwordSection.style.display = 'block';
+                } else {
+                    codeSection.style.display = 'block';
+                    passwordSection.style.display = 'none';
+                }
+            });
+        });
+
+        // 密码显示/隐藏切换
+        const togglePasswordBtn = this.dialog.querySelector('.toggle-password-btn');
+        const passwordInput = this.dialog.querySelector('#password');
+        if (togglePasswordBtn && passwordInput) {
+            togglePasswordBtn.addEventListener('click', () => {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                togglePasswordBtn.innerHTML = type === 'password' ? 
+                    '<i class="fas fa-eye"></i>' : 
+                    '<i class="fas fa-eye-slash"></i>';
+            });
+        }
+        // 忘记密码链接
+        const forgotPasswordLink = this.dialog.querySelector('.forgot-password-link');
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                // 切换到验证码登录
+                this.dialog.querySelector('[data-type="code"]').click();
+                // 自动触发发送验证码
+                const email = this.dialog.querySelector('#email').value;
+                if (email) {
+                    const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
+                    if (sendCodeBtn) {
+                        sendCodeBtn.click();
+                    }
+                }
+            });
+        }
+
+         // 修改登录提交按钮逻辑
         const loginSubmitBtn = this.dialog.querySelector('.login-submit-btn');
         if (loginSubmitBtn) {
             loginSubmitBtn.addEventListener('click', () => {
-                this.clearErrors(); // 清除所有错误消息
+                this.clearErrors();
                 
                 const email = this.dialog.querySelector('#email').value;
-                const code = this.dialog.querySelector('#verification-code').value;
+                const activeType = this.dialog.querySelector('.switch-btn.active').dataset.type;
                 
                 // 验证邮箱格式
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -742,16 +796,38 @@ show(selectedText = '') {
                     this.showError('email-error', '请输入有效的邮箱地址');
                     return;
                 }
-        
-                // 验证邮箱和验证码
-                if (email === 'yuguoming@yeah.net' && code === '666666') {
-                    this.handleSuccessfulLogin(email);
-                } else {
-                    if (email !== 'yuguoming@yeah.net') {
-                        this.showError('email-error', '邮箱地址不正确');
+
+                if (activeType === 'password') {
+                    // 密码登录验证
+                    const password = this.dialog.querySelector('#password').value;
+                    if (!password) {
+                        this.showError('password-error', '请输入密码');
+                        return;
                     }
-                    if (code !== '666666') {
-                        this.showError('code-error', '验证码不正确');
+                    
+                    // 验证邮箱和密码（示例验证）
+                    if (email === 'yuguoming@yeah.net' && password === '123456') {
+                        this.handleSuccessfulLogin(email);
+                    } else {
+                        this.showError('password-error', '邮箱或密码不正确');
+                    }
+                } else {
+                    // 验证码登录验证（保持原有逻辑）
+                    const code = this.dialog.querySelector('#verification-code').value;
+                    if (!code) {
+                        this.showError('code-error', '请输入验证码');
+                        return;
+                    }
+                    
+                    if (email === 'yuguoming@yeah.net' && code === '666666') {
+                        this.handleSuccessfulLogin(email);
+                    } else {
+                        if (email !== 'yuguoming@yeah.net') {
+                            this.showError('email-error', '邮箱地址不正确');
+                        }
+                        if (code !== '666666') {
+                            this.showError('code-error', '验证码不正确');
+                        }
                     }
                 }
             });

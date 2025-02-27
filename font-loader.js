@@ -23,6 +23,10 @@ style.textContent = `
     line-height: 1;
     text-rendering: auto;
 }
+.fa-eye:before {
+  content: "\\f06e"; }
+.fa-eye-slash:before  {
+  content: "\\f070"; }
 
 .fa-arrows-rotate:before {
     content: "\\f021";

@@ -716,23 +716,27 @@ body {
 }
 
 .form-group {
-position: relative;
-margin-bottom: 20px;
+    position: relative;
+    margin-bottom: 10px;
+    text-align: center; /* 整个表单组居中 */
 }
 
+
 .form-group label {
-display: block;
-margin-bottom: 8px;
-color: #333;
-font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 14px;
+    text-align: center; /* 添加这一行来使文本居中 */
 }
 
 .form-group input {
-width: 100%;
-padding: 10px;
-border: 1px solid #ddd;
-border-radius: 8px;
-font-size: 14px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: left; /* 保持输入框内的文本左对齐 */
 }
 
 .message-container {
@@ -1079,4 +1083,73 @@ transition: background-color 0.3s;
 
 #logout-btn:hover {
     background: #ff2020;
+}
+.switch-btn {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.switch-btn.active {
+    color: #1a73e8;
+}
+
+.switch-btn:not(:last-child)::after {
+    content: '|';
+    margin-left: 10px;
+    color: #e0e0e0;
+}
+/* 修改 password-input-group 样式 */
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-group input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 40px; /* 为按钮留出空间 */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+/* 修改 toggle-password-btn 样式 */
+.toggle-password-btn {
+    position: absolute;
+    right: 10px;  /* 距离右边的距离 */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+.toggle-password-btn:hover {
+    color: #333;
+}
+.login-type-switch {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.forgot-password-link {
+    display: block;
+    text-align: right;
+    color: #1a73e8;
+    font-size: 14px;
+    margin-top: 8px;
+    text-decoration: none;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
 }

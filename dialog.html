@@ -171,20 +171,41 @@
                                 <span>或</span>
                             </div>
                             <!-- 邮箱登录表单 -->
+                            <!-- 修改email-login-form部分 -->
                             <div class="email-login-form">
                                 <div class="form-group">
-                                    <label for="email">邮箱地址</label>
+                                    <label for="email">账户登录</label>
                                     <input type="email" id="email" placeholder="请输入邮箱地址">
                                     <span class="error-message" id="email-error"></span>
                                 </div>
-                                <div class="form-group verification-code">
-                                    <label for="verification-code">验证码</label>
+                                
+                                <!-- 添加登录方式切换 -->
+                                <div class="login-type-switch">
+                                    <button class="switch-btn active" data-type="code">验证码登录</button>
+                                    <button class="switch-btn" data-type="password">密码登录</button>
+                                </div>
+                                
+                                <!-- 验证码登录部分 -->
+                                <div class="form-group verification-code" id="code-login-section">
                                     <div class="verification-code-container">
                                         <input type="text" id="verification-code" placeholder="请输入验证码">
                                         <button class="send-code-btn">发送验证码</button>
                                     </div>
                                     <span class="error-message" id="code-error"></span>
                                 </div>
+                                
+                                <!-- 密码登录部分 -->
+                                <div class="form-group" id="password-login-section" style="display: none;">
+                                    <div class="password-input-group">
+                                        <input type="password" id="password" placeholder="请输入密码">
+                                        <button type="button" class="toggle-password-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <span class="error-message" id="password-error"></span>
+                                    <a href="#" class="forgot-password-link">忘记密码？</a>
+                                </div>
+                                
                                 <button class="login-submit-btn">登录</button>
                                 <button id="back-to-intro" class="back-button" style="margin-top: 16px; width: 100%;">返回</button>
                             </div>
