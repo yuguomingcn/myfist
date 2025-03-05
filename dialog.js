@@ -17,11 +17,11 @@ console.log('dialog.js loaded');
             this.isTransitioning = false; // 添加过渡状态标记
         }
 
-        // 添加一个方法来检查来源视图
-        isFromUserCenter() {
-            const userCenterView = this.dialog.querySelector('#user-center-view');
-            return userCenterView && userCenterView.dataset.wasActive === 'true';
-        }
+        // // 添加一个方法来检查来源视图
+        // isFromUserCenter() {
+        //     const userCenterView = this.dialog.querySelector('#user-center-view');
+        //     return userCenterView && userCenterView.dataset.wasActive === 'true';
+        // }
 
     async create() {
         console.log('Creating dialog...');
@@ -176,16 +176,11 @@ show(selectedText = '') {
         console.log('Switching to chat view...');
         const introView = this.dialog.querySelector('#introduction-view');
         const chatView = this.dialog.querySelector('#chat-view');
-        const userCenterView = this.dialog.querySelector('#user-center-view'); // 添加用户中心视图
-        
-        if (userCenterView && userCenterView.style.display === 'block') {
-            userCenterView.dataset.wasActive = 'true';
-        }
 
-        if (introView && chatView && userCenterView) { // 确保所有元素都存在
+        if (introView && chatView) { // 确保所有元素都存在
             // 隐藏其他所有视图
             introView.style.display = 'none';
-            userCenterView.style.display = 'none'; // 隐藏用户中心视图
+            //userCenterView.style.display = 'none'; // 隐藏用户中心视图
     
             // 显示聊天视图
             chatView.style.display = 'flex';
@@ -205,7 +200,6 @@ show(selectedText = '') {
             console.error('Views not found:', {
                 introView: !!introView,
                 chatView: !!chatView,
-                userCenterView: !!userCenterView
             });
         }
     }
@@ -224,21 +218,13 @@ show(selectedText = '') {
         const introView = this.dialog.querySelector('#introduction-view');
         const chatView = this.dialog.querySelector('#chat-view');
         const loginView = this.dialog.querySelector('#login-view');
-        const userCenterView = this.dialog.querySelector('#user-center-view');
         
         if (introView && chatView) {
             // 确保两个视图都有正确的显示状态
             introView.style.display = 'block';
             chatView.style.display = 'none';
             this.isIntroView = true;
-            
-            // 检查当前显示的是否是登录页面或用户中心
-            const isLoginViewVisible = loginView && loginView.style.display === 'block';
-            const isUserCenterVisible = userCenterView && userCenterView.style.display === 'block';
-            
-            // 根据当前页面决定是否显示聊天输入区域
-            this.toggleChatInput(!isLoginViewVisible && !isUserCenterVisible);
-            
+              
             // 重置聊天视图
             const messagesContainer = chatView.querySelector('#chat-messages');
             if (messagesContainer) {
@@ -481,76 +467,13 @@ show(selectedText = '') {
             if (confirmed) {
                 // 清空消息容器
                 messagesContainer.innerHTML = '';
-
-                // 检查是否来自用户中心
-                if (this.isFromUserCenter()) {
-                    // 恢复到用户中心状态
-                    const userCenterView = this.dialog.querySelector('#user-center-view');
-                    const introView = this.dialog.querySelector('#introduction-view');
-                    const chatView = this.dialog.querySelector('#chat-view');
-                    
-                    if (userCenterView && introView && chatView) {
-                        // 重置标记
-                        userCenterView.dataset.wasActive = 'false';
-                        
-                        // 显示用户中心
-                        userCenterView.style.display = 'block';
-                        introView.style.display = 'block';
-                        chatView.style.display = 'none';
-                        
-                        // 隐藏聊天输入
-                        this.toggleChatInput(false);
-                        this.isIntroView = true;
-                    }
-                } else {
-                    // 原有的切换到介绍页面的逻辑
-                    this.switchToIntro();
-                    this.toggleChatInput(true);
-                }
++            this.switchToIntro();
++            this.toggleChatInput(true);
             }
         }
     }
-    // 初始化设置
-    initializeSettings() {
-        // 从本地存储加载设置
-        const settings = this.loadSettings();
-        
-        // 设置默认值
-        Object.keys(settings).forEach(settingId => {
-            const element = this.dialog.querySelector(`#${settingId}`);
-            if (element) {
-                element.value = settings[settingId];
-                
-                // 添加change事件监听
-                element.addEventListener('change', () => {
-                    this.saveSetting(settingId, element.value);
-                });
-            }
-        });
-    }
 
-    // 加载设置
-    loadSettings() {
-        const defaultSettings = {
-            'default-language': 'zh_CN',
-            'translate-target': 'zh_CN',
-            'rewrite-style': 'original',
-            'expand-ratio': '20',
-            'shrink-ratio': '20',
-            'grammar-check': 'normal'
-        };
-
-        const savedSettings = localStorage.getItem('user-settings');
-        return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
-    }
-
-    // 保存单个设置
-    saveSetting(settingId, value) {
-        const settings = this.loadSettings();
-        settings[settingId] = value;
-        localStorage.setItem('user-settings', JSON.stringify(settings));
-        console.log(`Saved setting: ${settingId} = ${value}`);
-    }
+    
 
     // 修改 initializeEventListeners 方法，添加清空按钮的事件监听
     initializeEventListeners() {
@@ -562,14 +485,10 @@ show(selectedText = '') {
         console.log('Initializing event listeners');
     
         // 获取元素
-        const loginBtn = this.dialog.querySelector('#loginButton');
-        const loginView = this.dialog.querySelector('#login-view');
         const introContent = this.dialog.querySelector('#intro-content');
         const backButton = this.dialog.querySelector('#back-to-intro');
     
         console.log('Elements found:', {
-            loginBtn: loginBtn ? 'Found' : 'Not found',
-            loginView: loginView ? 'Found' : 'Not found',
             introContent: introContent ? 'Found' : 'Not found',
             backButton: backButton ? 'Found' : 'Not found'
         });
@@ -584,22 +503,6 @@ show(selectedText = '') {
             });
         }
     
-        // 监听登录按钮点击
-        if (loginBtn) {
-            console.log('Adding click event to login button');
-            loginBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Login button clicked');
-                if (loginView && introContent) {
-                    loginView.style.display = 'block';
-                    introContent.style.display = 'none';
-                    // 隐藏聊天输入区域
-                    this.toggleChatInput(false);
-                    console.log('Switched to login view');
-                }
-            });
-        }
     
         // 监听返回按钮点击
         if (backButton) {
@@ -618,14 +521,7 @@ show(selectedText = '') {
             });
         }
     
-        // 监听 Google 登录按钮
-        const googleLoginBtn = this.dialog.querySelector('.google-login-btn');
-        if (googleLoginBtn) {
-            googleLoginBtn.addEventListener('click', () => {
-                console.log('Google login button clicked');
-                // 这里添加 Google 登录逻辑
-            });
-        }
+        
 
         const closeButton = this.dialog.querySelector('#close-chat');
         const clearButton = this.dialog.querySelector('#clear-messages');
@@ -681,39 +577,7 @@ show(selectedText = '') {
         });
 
         // 添加用户中心返回按钮的事件监听
-        const userCenterBackBtn = this.dialog.querySelector('#user-center-view .back-icon-button');
-        if (userCenterBackBtn) {
-            userCenterBackBtn.addEventListener('click', () => {
-                // 隐藏用户中心视图
-                const userCenterView = this.dialog.querySelector('#user-center-view');
-                if (userCenterView) {
-                    userCenterView.style.display = 'none';
-                }
-                
-                // 显示介绍内容
-                const introContent = this.dialog.querySelector('#intro-content');
-                if (introContent) {
-                    introContent.style.display = 'block';
-                }
-                
-                // 显示整个介绍视图容器
-                const introView = this.dialog.querySelector('#introduction-view');
-                if (introView) {
-                    introView.style.display = 'block';
-                }
-
-                // 确保登录视图是隐藏的
-                const loginView = this.dialog.querySelector('#login-view');
-                if (loginView) {
-                    loginView.style.display = 'none';
-                }
-                // 显示聊天输入区域
-                this.toggleChatInput(true); // 添加这一行
-
-                // 标记为介绍视图状态
-                this.isIntroView = true;
-            });
-        }
+        
 
         // 防止事件冒泡的代码保持不变
         this.dialog.addEventListener('mousedown', (e) => {
@@ -727,394 +591,9 @@ show(selectedText = '') {
         this.dialog.addEventListener('dragstart', (e) => {
             e.preventDefault();
         });
-        
-
-        // 登录方式切换
-        const switchBtns = this.dialog.querySelectorAll('.switch-btn');
-        const codeSection = this.dialog.querySelector('#code-login-section');
-        const passwordSection = this.dialog.querySelector('#password-login-section');
-
-        switchBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // 更新按钮状态
-                switchBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // 切换登录表单
-                if (btn.dataset.type === 'password') {
-                    codeSection.style.display = 'none';
-                    passwordSection.style.display = 'block';
-                } else {
-                    codeSection.style.display = 'block';
-                    passwordSection.style.display = 'none';
-                }
-            });
-        });
-
-        // 密码显示/隐藏切换
-        const togglePasswordBtn = this.dialog.querySelector('.toggle-password-btn');
-        const passwordInput = this.dialog.querySelector('#password');
-        if (togglePasswordBtn && passwordInput) {
-            togglePasswordBtn.addEventListener('click', () => {
-                const type = passwordInput.type === 'password' ? 'text' : 'password';
-                passwordInput.type = type;
-                togglePasswordBtn.innerHTML = type === 'password' ? 
-                    '<i class="fas fa-eye"></i>' : 
-                    '<i class="fas fa-eye-slash"></i>';
-            });
-        }
-        // 忘记密码链接
-        const forgotPasswordLink = this.dialog.querySelector('.forgot-password-link');
-        if (forgotPasswordLink) {
-            forgotPasswordLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                // 切换到验证码登录
-                this.dialog.querySelector('[data-type="code"]').click();
-                // 自动触发发送验证码
-                const email = this.dialog.querySelector('#email').value;
-                if (email) {
-                    const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
-                    if (sendCodeBtn) {
-                        sendCodeBtn.click();
-                    }
-                }
-            });
-        }
-
-         // 修改登录提交按钮逻辑
-        const loginSubmitBtn = this.dialog.querySelector('.login-submit-btn');
-        if (loginSubmitBtn) {
-            loginSubmitBtn.addEventListener('click', () => {
-                this.clearErrors();
-                
-                const email = this.dialog.querySelector('#email').value;
-                const activeType = this.dialog.querySelector('.switch-btn.active').dataset.type;
-                
-                // 验证邮箱格式
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    this.showError('email-error', '请输入有效的邮箱地址');
-                    return;
-                }
-
-                if (activeType === 'password') {
-                    // 密码登录验证
-                    const password = this.dialog.querySelector('#password').value;
-                    if (!password) {
-                        this.showError('password-error', '请输入密码');
-                        return;
-                    }
-                    
-                    // 验证邮箱和密码（示例验证）
-                    if (email === 'yuguoming@yeah.net' && password === '123456') {
-                        this.handleSuccessfulLogin(email);
-                    } else {
-                        this.showError('password-error', '邮箱或密码不正确');
-                    }
-                } else {
-                    // 验证码登录验证（保持原有逻辑）
-                    const code = this.dialog.querySelector('#verification-code').value;
-                    if (!code) {
-                        this.showError('code-error', '请输入验证码');
-                        return;
-                    }
-                    
-                    if (email === 'yuguoming@yeah.net' && code === '666666') {
-                        this.handleSuccessfulLogin(email);
-                    } else {
-                        if (email !== 'yuguoming@yeah.net') {
-                            this.showError('email-error', '邮箱地址不正确');
-                        }
-                        if (code !== '666666') {
-                            this.showError('code-error', '验证码不正确');
-                        }
-                    }
-                }
-            });
-        }
-
-        // 处理介绍页面的注册按钮点击
-        const introRegisterBtn = this.dialog.querySelector('#registerButton');
-        if (introRegisterBtn) {
-            introRegisterBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const loginView = this.dialog.querySelector('#login-view');
-                const introContent = this.dialog.querySelector('#intro-content');
-                const loginForm = this.dialog.querySelector('#login-form');
-                const registerForm = this.dialog.querySelector('#register-form');
-                const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
-                const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
-
-                if (loginView && introContent && loginForm && registerForm) {
-                    // 显示登录视图容器，隐藏介绍内容
-                    loginView.style.display = 'block';
-                    introContent.style.display = 'none';
-
-                    // 显示注册表单，隐藏登录表单
-                    loginForm.style.display = 'none';
-                    registerForm.style.display = 'block';
-                    switchToLoginBtn.style.display = 'block';
-                    switchToRegisterBtn.style.display = 'none';
-
-                    // 更新标题和 Google 按钮文本
-                    this.dialog.querySelector('#auth-title').textContent = '注册 DEEPHEY.AI';
-                    this.dialog.querySelector('#google-btn-text').textContent = '使用 Google 账号注册';
-
-                    // 隐藏聊天输入区域
-                    this.toggleChatInput(false);
-                }
-            });
-        }
-
-        // 处理注册表单密码显示/隐藏
-        const registerPasswordToggles = this.dialog.querySelectorAll('#register-form .toggle-password-btn');
-        registerPasswordToggles.forEach(toggle => {
-            toggle.addEventListener('click', (e) => {
-                const input = e.target.closest('.password-input-group').querySelector('input');
-                const type = input.type === 'password' ? 'text' : 'password';
-                input.type = type;
-                toggle.innerHTML = type === 'password' ? 
-                    '<i class="fas fa-eye"></i>' : 
-                    '<i class="fas fa-eye-slash"></i>';
-            });
-        });
-
-        // 处理注册发送验证码
-        const registerSendCodeBtn = this.dialog.querySelector('#register-send-code');
-        if (registerSendCodeBtn) {
-            this.initializeVerificationCode(registerSendCodeBtn, 'register-email', 'register-email-error');
-        }
-
-        // 处理注册表单提交
-        const registerSubmitBtn = this.dialog.querySelector('#register-form .register-btn');
-        if (registerSubmitBtn) {
-            registerSubmitBtn.addEventListener('click', () => {
-                this.handleRegisterSubmit();
-            });
-        }
-
-
-
-        // 处理登录/注册切换
-        const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
-        const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
-        if (switchToRegisterBtn && switchToLoginBtn) {
-            switchToRegisterBtn.addEventListener('click', () => {
-                this.switchToRegisterForm();
-            });
-
-            switchToLoginBtn.addEventListener('click', () => {
-                this.switchToLoginForm();
-            });
-        }
-
-        // 处理发送验证码按钮
-        const sendCodeBtn = this.dialog.querySelector('.send-code-btn');
-        if (sendCodeBtn) {
-            let canSendCode = true;
-            let countdown = 60;
-            
-            sendCodeBtn.addEventListener('click', () => {
-                if (!canSendCode) return;
-                
-                this.clearErrors();
-                const email = this.dialog.querySelector('#email').value;
-                
-                // 验证邮箱格式
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    this.showError('email-error', '请输入有效的邮箱地址');
-                    return;
-                }
-
-                if (email === 'yuguoming@yeah.net') {
-                    // 显示成功消息
-                    this.showError('email-error', '验证码已发送，请查收');
-                    document.querySelector('#email-error').style.color = '#4CAF50'; // 使用绿色表示成功
-                    
-                    // 开始倒计时
-                    canSendCode = false;
-                    sendCodeBtn.disabled = true;
-                    
-                    const timer = setInterval(() => {
-                        countdown--;
-                        sendCodeBtn.textContent = `${countdown}秒后重试`;
-                        
-                        if (countdown <= 0) {
-                            clearInterval(timer);
-                            sendCodeBtn.disabled = false;
-                            sendCodeBtn.textContent = '发送验证码';
-                            canSendCode = true;
-                            countdown = 60;
-                        }
-                    }, 1000);
-                } else {
-                    this.showError('email-error', '该邮箱地址未注册');
-                }
-            });
-        }
-
-        // 处理退出登录按钮
-        const logoutBtn = this.dialog.querySelector('#logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                this.handleLogout();
-            });
-        }
-        // 添加输入框获得焦点时清除错误信息的代码
-        const inputs = this.dialog.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                const errorElement = input.parentElement.querySelector('.error-message') || 
-                                input.parentElement.parentElement.querySelector('.error-message');
-                if (errorElement) {
-                    errorElement.textContent = '';
-                    errorElement.style.display = 'none';
-                }
-            });
-        });
 
     }
     
-    switchToRegisterForm() {
-        const loginForm = this.dialog.querySelector('#login-form');
-        const registerForm = this.dialog.querySelector('#register-form');
-        const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
-        const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
-    
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-        switchToLoginBtn.style.display = 'block';
-        switchToRegisterBtn.style.display = 'none';
-    
-        // 更新标题和 Google 按钮文本
-        this.dialog.querySelector('#auth-title').textContent = '注册 DEEPHEY.AI';
-        this.dialog.querySelector('#google-btn-text').textContent = '使用 Google 账号注册';
-    
-        // 清除错误信息
-        this.clearErrors();
-    }
-    switchToLoginForm() {
-        const loginForm = this.dialog.querySelector('#login-form');
-        const registerForm = this.dialog.querySelector('#register-form');
-        const switchToLoginBtn = this.dialog.querySelector('#switch-to-login');
-        const switchToRegisterBtn = this.dialog.querySelector('#switch-to-register');
-    
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-        switchToLoginBtn.style.display = 'none';
-        switchToRegisterBtn.style.display = 'block';
-    
-        // 更新标题和 Google 按钮文本
-        this.dialog.querySelector('#auth-title').textContent = '登录 DEEPHEY.AI';
-        this.dialog.querySelector('#google-btn-text').textContent = '使用 Google 账号登录';
-    
-        // 清除错误信息
-        this.clearErrors();
-    }
-    initializeVerificationCode(button, emailInputId, errorElementId) {
-        let canSendCode = true;
-        let countdown = 60;
-    
-        button.addEventListener('click', () => {
-            if (!canSendCode) return;
-    
-            const email = this.dialog.querySelector(`#${emailInputId}`).value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-            if (!emailRegex.test(email)) {
-                this.showError(errorElementId, '请输入有效的邮箱地址');
-                return;
-            }
-    
-            // 这里应该调用后端 API 发送验证码
-            this.showError(errorElementId, '验证码已发送，请查收');
-            const errorElement = this.dialog.querySelector(`#${errorElementId}`);
-            if (errorElement) {
-                errorElement.style.color = '#4CAF50';
-                errorElement.style.display = 'block';
-            }
-    
-            // 开始倒计时
-            canSendCode = false;
-            button.disabled = true;
-            
-            const timer = setInterval(() => {
-                countdown--;
-                button.textContent = `${countdown}秒后重试`;
-                
-                if (countdown <= 0) {
-                    clearInterval(timer);
-                    button.disabled = false;
-                    button.textContent = '发送验证码';
-                    canSendCode = true;
-                    countdown = 60;
-                }
-            }, 1000);
-        });
-    }
-    
-    handleRegisterSubmit() {
-        this.clearErrors();
-    
-        const email = this.dialog.querySelector('#register-email').value;
-        const password = this.dialog.querySelector('#register-password').value;
-        const confirmPassword = this.dialog.querySelector('#register-confirm-password').value;
-        const verificationCode = this.dialog.querySelector('#register-verification-code').value;
-    
-        // 验证邮箱
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            this.showError('register-email-error', '请输入有效的邮箱地址');
-            return;
-        }
-    
-        // 验证密码
-        if (password.length < 6) {
-            this.showError('register-password-error', '密码长度不能少于6位');
-            return;
-        }
-        // 验证密码格式：只允许英文、数字和特殊符号
-        const passwordRegex = /^[A-Za-z0-9\`\~\!\@\#\$\%\^\&\*\(\)\_\+\-\=\[\]\{\}\|\\\;\:\"\'\,\.\<\>\/\?]+$/;
-        if (!passwordRegex.test(password)) {
-            this.showError('register-password-error', '密码只能包含英文、数字和特殊符号');
-            return;
-        }
-    
-        // 验证确认密码
-        if (password !== confirmPassword) {
-            this.showError('register-confirm-error', '两次输入的密码不一致');
-            return;
-        }
-    
-        // 验证验证码
-        if (!verificationCode) {
-            this.showError('register-code-error', '请输入验证码');
-            return;
-        }
-    
-        // 这里应该调用后端 API 进行注册
-        // 模拟注册成功
-        setTimeout(() => {
-            this.showError('register-email-error', '注册成功！');
-            const errorElement = this.dialog.querySelector('#register-email-error');
-            if (errorElement) {
-                errorElement.style.color = '#4CAF50';
-            }
-    
-            // 延时后切换到登录表单
-            setTimeout(() => {
-                this.switchToLoginForm();
-                // 自动填充邮箱
-                const loginEmailInput = this.dialog.querySelector('#login-email');
-                if (loginEmailInput) {
-                    loginEmailInput.value = email;
-                }
-            }, 1500);
-        }, 1000);
-    }
 
     async handleSendMessage() {
         if (!this.isInitialized) {
@@ -1176,14 +655,6 @@ show(selectedText = '') {
         const loginView = this.dialog.querySelector('#login-view');
         if (loginView) loginView.style.display = 'none';
 
-        // 显示用户中心视图
-        const userCenterView = this.dialog.querySelector('#user-center-view');
-        if (userCenterView) {
-            userCenterView.style.display = 'block';
-            // 更新用户信息
-            const userEmail = this.dialog.querySelector('#user-email');
-            if (userEmail) userEmail.textContent = email;
-        }
 
         // 隐藏聊天输入区域
         this.toggleChatInput(false);
@@ -1192,32 +663,9 @@ show(selectedText = '') {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
         
-        this.initializeSettings();
     }
 
-    handleLogout() {
-        // 清除登录状态
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('userEmail');
-
-        // 显示登录视图
-        const loginView = this.dialog.querySelector('#login-view');
-        if (loginView) loginView.style.display = 'block';
-
-        // 隐藏用户中心视图
-        const userCenterView = this.dialog.querySelector('#user-center-view');
-        if (userCenterView) userCenterView.style.display = 'none';
-    }
-
-    // 检查登录状态
-    checkLoginStatus() {
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        const userEmail = localStorage.getItem('userEmail');
-
-        if (isLoggedIn && userEmail) {
-            this.handleSuccessfulLogin(userEmail);
-        }
-    }
+    
     showError(elementId, message) {
         const errorElement = this.dialog.querySelector(`#${elementId}`);
         if (errorElement) {
